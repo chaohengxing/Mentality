@@ -51,7 +51,7 @@ public class UserNetwork {
             //登录成功，拿到服务端返回的用户信息，登录成功后将用户信息存入本地
 
             MyUser myUser = new MyUser();
-            myUser.setId(0);
+            myUser.setId(5);
             myUser.setOpenId("123456789");
             myUser.setUserIcon("http://life.people.com.cn/NMediaFile/2015/0618/MAIN201506181420187740456986383.jpg");
             myUser.setUserName("测试用户名");

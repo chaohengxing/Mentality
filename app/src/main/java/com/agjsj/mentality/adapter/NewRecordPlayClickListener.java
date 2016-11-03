@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.agjsj.mentality.R;
+import com.agjsj.mentality.network.UserNetwork;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,7 +37,8 @@ public class NewRecordPlayClickListener implements View.OnClickListener {
 		currentMsg = msg;
 		currentPlayListener = this;
 		try {
-			currentObjectId = BmobUser.getCurrentUser(mContext).getObjectId();
+			//BmobUser.getCurrentUser(mContext).getObjectId();
+			currentObjectId =  String.valueOf(UserNetwork.getInstance().getCurrentUser().getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -63,7 +63,7 @@ public class TeachersFragment extends ParentWithNaviFragment {
         //发起聊天
         //构造聊天方的用户信息:传入用户id、用户名和用户头像三个参数
 //        BmobIMUserInfo info = new BmobIMUserInfo("0", "测试用户名", "http://images.china.cn/attachement/png/site1000/20150930/ac9e178530e11775d4363d.png");
-        BmobIMUserInfo info = new BmobIMUserInfo("5", "测试用户名", "http://life.people.com.cn/NMediaFile/2015/0618/MAIN201506181420187740456986383.jpg");
+        BmobIMUserInfo info = new BmobIMUserInfo("0", "测试用户名", "http://life.people.com.cn/NMediaFile/2015/0618/MAIN201506181420187740456986383.jpg");
 
         //启动一个会话，设置isTransient设置为false,则会在本地数据库的会话列表中先创建（如果没有）与该用户的会话信息，且将用户信息存储到本地的用户表中
         BmobIMConversation c = BmobIM.getInstance().startPrivateConversation(info, false, null);
