@@ -71,8 +71,6 @@ public class TeachersFragment extends ParentWithNaviFragment {
         bundle.putSerializable("c", c);
         Logger.e("chx", "发起会话");
         startActivity(ChatActivity.class, bundle);
-
-
     }
 
     @Nullable

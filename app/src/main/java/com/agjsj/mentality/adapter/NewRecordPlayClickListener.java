@@ -20,15 +20,15 @@ import cn.bmob.v3.BmobUser;
 
 public class NewRecordPlayClickListener implements View.OnClickListener {
 
-	BmobIMAudioMessage message;
-	ImageView iv_voice;
-	private AnimationDrawable anim = null;
-	Context mContext;
-	String currentObjectId = "";
-	MediaPlayer mediaPlayer = null;
-	public static boolean isPlaying = false;
-	public static NewRecordPlayClickListener currentPlayListener = null;
-	static BmobIMAudioMessage currentMsg = null;
+    BmobIMAudioMessage message;
+    ImageView iv_voice;
+    private AnimationDrawable anim = null;
+    Context mContext;
+    String currentObjectId = "";
+    MediaPlayer mediaPlayer = null;
+    public static boolean isPlaying = false;
+    public static NewRecordPlayClickListener currentPlayListener = null;
+    static BmobIMAudioMessage currentMsg = null;
 
 	public NewRecordPlayClickListener(Context context, BmobIMAudioMessage msg, ImageView voice) {
 		this.iv_voice = voice;
@@ -37,8 +37,7 @@ public class NewRecordPlayClickListener implements View.OnClickListener {
 		currentMsg = msg;
 		currentPlayListener = this;
 		try {
-			//BmobUser.getCurrentUser(mContext).getObjectId();
-			currentObjectId =  String.valueOf(UserNetwork.getInstance().getCurrentUser().getId());
+			currentObjectId = BmobUser.getCurrentUser(mContext).getObjectId();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
