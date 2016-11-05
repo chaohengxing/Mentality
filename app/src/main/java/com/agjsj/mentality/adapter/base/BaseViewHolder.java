@@ -23,6 +23,7 @@ public abstract class BaseViewHolder<T> extends RecyclerView.ViewHolder implemen
   public OnRecyclerViewListener onRecyclerViewListener;
   protected Context context;
 
+
   public BaseViewHolder(Context context, ViewGroup root, int layoutRes, OnRecyclerViewListener listener) {
     super(LayoutInflater.from(context).inflate(layoutRes, root, false));
     this.context=context;

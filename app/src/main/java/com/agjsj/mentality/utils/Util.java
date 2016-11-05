@@ -1,5 +1,9 @@
 package com.agjsj.mentality.utils;
 
+import android.graphics.Color;
+
+import java.security.SecureRandom;
+
 /**
  * @author smile
  * @project Util
@@ -12,5 +16,17 @@ public class Util {
             return true;
         else
             return false;
+    }
+
+    /**
+     * 随机获取一个颜色，用于测试
+     *
+     * @return
+     */
+    public static int getRandomColor() {
+        SecureRandom rgen = new SecureRandom();
+        return Color.HSVToColor(150, new float[]{
+                rgen.nextInt(359), 1, 1
+        });
     }
 }

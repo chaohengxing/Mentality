@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.agjsj.mentality.ui.base.BaseActivity;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -101,6 +102,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
     @Override
     public void onBindViewHolder(BaseRecyclerHolder holder, int position) {
         int type = getViewTypeByPosition(position);
+        Logger.i("Type:" + type);
         if(type==TYPE_HEADER){
             bindView(holder, null, position);
         }else if(type==TYPE_MUTIPLE){

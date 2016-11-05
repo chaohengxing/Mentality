@@ -13,8 +13,11 @@ import android.widget.RelativeLayout;
 
 import com.agjsj.mentality.R;
 import com.agjsj.mentality.bean.MyUser;
+import com.agjsj.mentality.bean.UserType;
 import com.agjsj.mentality.network.UserNetwork;
 import com.agjsj.mentality.ui.appoint.AppointFragment;
+import com.agjsj.mentality.ui.appoint.StudentAppointFragment;
+import com.agjsj.mentality.ui.appoint.TeacherAppointFragment;
 import com.agjsj.mentality.ui.base.BaseActivity;
 import com.agjsj.mentality.ui.chat.event.RefreshEvent;
 import com.agjsj.mentality.ui.chat.fragment.ChatFragment;
@@ -124,7 +127,13 @@ public class MainActivity extends BaseActivity {
         jtFragment = new JtFragment();
         teachersFragment = new TeachersFragment();
         chatFragment = new ChatFragment();
-        appointFragment = new AppointFragment();
+
+        int userType = 2;
+        if (userType == UserType.StudentType) {
+            appointFragment = new StudentAppointFragment();
+        } else if (userType == UserType.TeacherType) {
+            appointFragment = new TeacherAppointFragment();
+        }
 
         fragments = new Fragment[]{jtFragment, teachersFragment, chatFragment, appointFragment};
         getSupportFragmentManager().beginTransaction()

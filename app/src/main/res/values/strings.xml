@@ -44,4 +44,10 @@
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_user_info">UserInfoActivity</string>
+
+    <string-array name="appoint_array">
+        <item>综合排序</item>
+        <item>时间从低到高</item>
+        <item>时间从高到底</item>
+    </string-array>
 </resources>
