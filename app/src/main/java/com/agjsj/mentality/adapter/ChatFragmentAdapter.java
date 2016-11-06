@@ -26,6 +26,7 @@ public class ChatFragmentAdapter extends BaseRecyclerAdapter<Conversation> {
 
     @Override
     public void bindView(BaseRecyclerHolder holder, Conversation conversation, int position) {
+
         holder.setText(R.id.tv_msg, conversation.getLastMessageContent());
         holder.setText(R.id.tv_time, TimeUtil.getChatTime(false, conversation.getLastMessageTime()));
         //会话图标
