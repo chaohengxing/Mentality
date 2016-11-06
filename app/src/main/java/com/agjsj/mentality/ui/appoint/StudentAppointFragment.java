@@ -93,8 +93,10 @@ public class StudentAppointFragment extends AppointFragment {
         adapter.add(new AppointInfo());
         adapter.addAll(mAppointInfoList);
         mRecyclerView.setAdapter(adapter);
+
         linearLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(linearLayoutManager);
+
         mHeaderDecor = new StickyRecyclerHeadersDecoration(adapter);
         mRecyclerView.addItemDecoration(mHeaderDecor);
 
@@ -138,6 +140,7 @@ public class StudentAppointFragment extends AppointFragment {
         });
 
         mRecyclerView.addOnItemTouchListener(touchListener);
+
     }
 
 

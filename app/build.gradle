@@ -36,4 +36,5 @@ dependencies {
     //bmob-sdk:3.4.7
     compile 'cn.bmob.android:bmob-sdk:3.4.7-aar'
     compile 'com.timehop.stickyheadersrecyclerview:library:0.4.3'
+    compile 'com.tubb.smrv:swipemenu-recyclerview:5.3.0'
 }

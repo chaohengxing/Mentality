@@ -3,10 +3,12 @@ package com.agjsj.mentality.adapter.appoint;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.agjsj.mentality.R;
 import com.agjsj.mentality.bean.appoint.TimeStatus;
@@ -59,12 +61,24 @@ public class TimeAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) view.getTag();
         }
-        Logger.i("TimeAdapter" + "timeStatus.get(i).getId()：" + timeStatus.get(i).getId() + "\n" + ConstatParam.timeTemplateMap.get(timeStatus.get(i).getId()).getTimeName() + "");
+        //Logger.i("TimeAdapter" + "timeStatus.get(i).getId()：" + timeStatus.get(i).getId() + "\n" + ConstatParam.timeTemplateMap.get(timeStatus.get(i).getId()).getTimeName() + "");
         holder.tv_time.setText(ConstatParam.timeTemplateMap.get(timeStatus.get(i).getId()).getTimeName() + "");
         if (timeStatus.get(i).isStatus()) {
             holder.tv_time.setBackgroundColor(Color.WHITE);
+            holder.tv_time.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(context, "确定要发布次时间段空闲时间吗？", Toast.LENGTH_SHORT).show();
+                }
+            });
         } else {
             holder.tv_time.setBackgroundColor(Color.GRAY);
+            holder.tv_time.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    return true;
+                }
+            });
         }
 
         return view;

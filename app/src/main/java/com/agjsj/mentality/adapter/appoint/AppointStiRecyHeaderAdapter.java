@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
  * Created by YH on 2016/11/5.
  */
 
-public class AppointStiRecyHeaderAdapter extends BaseAppointAdapter<RecyclerView.ViewHolder> implements StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder> {
+public class AppointStiRecyHeaderAdapter extends BaseAppointAdapter<AppointHolder> implements StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder> {
 
     private Context context;
 
@@ -32,24 +32,25 @@ public class AppointStiRecyHeaderAdapter extends BaseAppointAdapter<RecyclerView
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public AppointHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_appoint_stu, parent, false);
-        return new ItemViewHolder(view);
+        return new AppointHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ItemViewHolder mHolder = (ItemViewHolder) holder;
+    public void onBindViewHolder(AppointHolder holder, int position) {
         if (position == 0) {
-            mHolder.ll_appointInfo.setVisibility(View.GONE);
+            holder.ll_appointInfo.setVisibility(View.GONE);
         } else {
-            mHolder.ll_appointInfo.setVisibility(View.VISIBLE);
-            mHolder.tv_name.setText(getItem(position).getTeacherName() + "");
-            mHolder.tv_time.setText(getItem(position).getTime() + "");
-            mHolder.tv_major.setText(getItem(position).getMarjor() + "");
-            PicassoUtils.loadResourceImage(R.drawable.ic_launcher, 80, 80, mHolder.iv_icon);
+            holder.ll_appointInfo.setVisibility(View.VISIBLE);
+            holder.tv_name.setText(getItem(position).getTeacherName() + "");
+            holder.tv_time.setText(getItem(position).getTime() + "");
+            holder.tv_major.setText(getItem(position).getMarjor() + "");
+            PicassoUtils.loadResourceImage(R.drawable.ic_launcher, 80, 80, holder.iv_icon);
         }
+
+
     }
 
     @Override
