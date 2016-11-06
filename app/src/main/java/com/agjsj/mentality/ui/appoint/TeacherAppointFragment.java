@@ -12,6 +12,7 @@ import com.agjsj.mentality.adapter.appoint.FreeTimeAdapter;
 import com.agjsj.mentality.R;
 import com.agjsj.mentality.bean.appoint.FreeTime;
 import com.agjsj.mentality.bean.appoint.TimeStatus;
+import com.agjsj.mentality.network.AppointNetwork;
 import com.agjsj.mentality.ui.MainActivity;
 import com.agjsj.mentality.ui.SearchActivity;
 import com.agjsj.mentality.ui.base.ParentWithNaviActivity;
@@ -88,20 +89,26 @@ public class TeacherAppointFragment extends AppointFragment {
 
     private void initData() {
         freeTimeList = new ArrayList<>();
-
-        for (int i = 0; i < 5; i++) {
-            FreeTime time = new FreeTime();
-            time.setDate(TimeUtil.getFormatToday(TimeUtil.FORMAT_DATE + "_" + i));
-            List<TimeStatus> timeStatus = new ArrayList<>();
-            for (int j = 0; j < 6; j++) {
-                TimeStatus status = new TimeStatus();
-                status.setId(j);
-                status.setStatus(getRadomBool());
-                timeStatus.add(status);
+        AppointNetwork.getInstance().queryTeacherFreeTime("0001", new AppointNetwork.QueryTeaFreeTimeCallable() {
+            @Override
+            public void postResult(List<FreeTime> lists) {
+                freeTimeList = lists;
             }
-            time.setTimeStatus(timeStatus);
-            freeTimeList.add(time);
-        }
+        });
+
+//        for (int i = 0; i < 5; i++) {
+//            FreeTime time = new FreeTime();
+//            time.setDate(TimeUtil.getFormatToday(TimeUtil.FORMAT_DATE + "_" + i));
+//            List<TimeStatus> timeStatus = new ArrayList<>();
+//            for (int j = 0; j < 6; j++) {
+//                TimeStatus status = new TimeStatus();
+//                status.setId(j);
+//                status.setStatus(getRadomBool());
+//                timeStatus.add(status);
+//            }
+//            time.setTimeStatus(timeStatus);
+//            freeTimeList.add(time);
+//        }
     }
 
     private boolean getRadomBool() {

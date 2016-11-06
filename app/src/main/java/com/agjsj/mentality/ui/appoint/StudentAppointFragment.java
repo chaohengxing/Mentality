@@ -9,14 +9,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.agjsj.mentality.R;
+import com.agjsj.mentality.adapter.appoint.AppointHolder;
 import com.agjsj.mentality.adapter.appoint.AppointStiRecyHeaderAdapter;
 import com.agjsj.mentality.bean.appoint.AppointInfo;
 import com.agjsj.mentality.ui.MainActivity;
 import com.agjsj.mentality.ui.SearchActivity;
 import com.agjsj.mentality.ui.base.ParentWithNaviActivity;
 import com.agjsj.mentality.utils.TimeUtil;
+import com.orhanobut.logger.Logger;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersTouchListener;
+import com.tubb.smrv.SwipeHorizontalMenuLayout;
+import com.tubb.smrv.SwipeMenuLayout;
+import com.tubb.smrv.SwipeVerticalMenuLayout;
+import com.tubb.smrv.listener.SwipeSwitchListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,14 +35,16 @@ import butterknife.ButterKnife;
  */
 public class StudentAppointFragment extends AppointFragment {
 
+    private static final String TAG = "StudentAppoint";
     @Bind(R.id.recyc_appoint_stu)
     RecyclerView mRecyclerView;
+
 
     private LayoutInflater mInflater;
     private ArrayList<AppointInfo> mAppointInfoList;
     private ArrayList<String> mTitleList;
-    private List<List<AppointInfo>> allAppoints;
 
+    private List<List<AppointInfo>> allAppoints;
     private AppointStiRecyHeaderAdapter adapter;
     private StickyRecyclerHeadersDecoration mHeaderDecor;
     private LinearLayoutManager linearLayoutManager;
@@ -78,7 +86,6 @@ public class StudentAppointFragment extends AppointFragment {
         initNaviView();
         ButterKnife.bind(this, rootView);
 
-
         initDate();
 
         initView();
@@ -93,8 +100,10 @@ public class StudentAppointFragment extends AppointFragment {
         adapter.add(new AppointInfo());
         adapter.addAll(mAppointInfoList);
         mRecyclerView.setAdapter(adapter);
+
         linearLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(linearLayoutManager);
+
         mHeaderDecor = new StickyRecyclerHeadersDecoration(adapter);
         mRecyclerView.addItemDecoration(mHeaderDecor);
 
@@ -138,6 +147,19 @@ public class StudentAppointFragment extends AppointFragment {
         });
 
         mRecyclerView.addOnItemTouchListener(touchListener);
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                List<AppointHolder> holders = adapter.getHolders();
+                for (AppointHolder holder : holders
+                        ) {
+                    holder.doRecoverSwipeMenu();
+                }
+//                Logger.i("onScrolled");
+            }
+        });
+
     }
 
 

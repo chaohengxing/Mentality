@@ -128,7 +128,7 @@ public class MainActivity extends BaseActivity {
         teachersFragment = new TeachersFragment();
         chatFragment = new ChatFragment();
 
-        int userType = 2;
+        int userType = 1;
         if (userType == UserType.StudentType) {
             appointFragment = new StudentAppointFragment();
         } else if (userType == UserType.TeacherType) {
