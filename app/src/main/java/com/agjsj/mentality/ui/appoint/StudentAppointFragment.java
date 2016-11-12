@@ -12,6 +12,7 @@ import com.agjsj.mentality.R;
 import com.agjsj.mentality.adapter.appoint.AppointHolder;
 import com.agjsj.mentality.adapter.appoint.AppointStiRecyHeaderAdapter;
 import com.agjsj.mentality.bean.appoint.AppointInfo;
+import com.agjsj.mentality.network.AppointNetwork;
 import com.agjsj.mentality.ui.MainActivity;
 import com.agjsj.mentality.ui.SearchActivity;
 import com.agjsj.mentality.ui.base.ParentWithNaviActivity;
@@ -41,13 +42,12 @@ public class StudentAppointFragment extends AppointFragment {
 
 
     private LayoutInflater mInflater;
-    private ArrayList<AppointInfo> mAppointInfoList;
-    private ArrayList<String> mTitleList;
 
-    private List<List<AppointInfo>> allAppoints;
     private AppointStiRecyHeaderAdapter adapter;
     private StickyRecyclerHeadersDecoration mHeaderDecor;
     private LinearLayoutManager linearLayoutManager;
+    private AppointNetwork appointNetwork = AppointNetwork.getInstance();
+    long lastTime = 0;
 
     @Override
     protected String title() {
@@ -86,9 +86,9 @@ public class StudentAppointFragment extends AppointFragment {
         initNaviView();
         ButterKnife.bind(this, rootView);
 
-        initDate();
 
         initView();
+
         setListener();
 
         return rootView;
@@ -97,35 +97,27 @@ public class StudentAppointFragment extends AppointFragment {
 
     private void initView() {
         adapter = new AppointStiRecyHeaderAdapter(getContext());
-        adapter.add(new AppointInfo());
-        adapter.addAll(mAppointInfoList);
+        initDate();
         mRecyclerView.setAdapter(adapter);
 
         linearLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(linearLayoutManager);
-
         mHeaderDecor = new StickyRecyclerHeadersDecoration(adapter);
         mRecyclerView.addItemDecoration(mHeaderDecor);
 
     }
 
+    /**
+     * 下拉刷新时调用
+     */
     private void initDate() {
-        mTitleList = new ArrayList<>();
-        mAppointInfoList = new ArrayList<>();
-        allAppoints = new ArrayList<>();
-
-
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 8; j++) {
-                AppointInfo a = new AppointInfo();
-                a.setTeacherName("李老师" + j);
-                a.setTime(j + "--" + (j + 2));
-                a.setMarjor("特长：");
-                a.setDate(TimeUtil.getFormatToday(TimeUtil.FORMAT_DATE) + "_" + i);
-                mAppointInfoList.add(a);
+        appointNetwork.queryStundetCanAppointTime(new AppointNetwork.QueryStundetCanAppointTimeCallable() {
+            @Override
+            public void postResult(List<AppointInfo> lists) {
+                adapter.clear();
+                adapter.addAll(lists);
             }
-        }
-
+        });
 
     }
 
@@ -148,15 +140,34 @@ public class StudentAppointFragment extends AppointFragment {
 
         mRecyclerView.addOnItemTouchListener(touchListener);
 
+
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - lastTime > 500) {
+//                    Logger.i("do Scroll Listener");
+                    List<AppointHolder> holders = adapter.getHolders();
+                    for (AppointHolder holder : holders
+                            ) {
+                        holder.doRecoverSwipeMenu();
+                    }
+                }
+                lastTime = currentTime;
+
+
+//                Logger.i("onScrolled");
+            }
+        });
+
+        mRecyclerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 List<AppointHolder> holders = adapter.getHolders();
                 for (AppointHolder holder : holders
                         ) {
                     holder.doRecoverSwipeMenu();
                 }
-//                Logger.i("onScrolled");
             }
         });
 

@@ -23,10 +23,10 @@ public class MySwipeHorizontalMenuLayout extends SwipeHorizontalMenuLayout {
     }
 
     public boolean isCurrentSwipeExit() {
-        if (mCurrentSwiper == null) {
-            return false;
-        } else {
+        if (mCurrentSwiper != null && isMenuOpen()) {
             return true;
+        } else {
+            return false;
         }
     }
 }

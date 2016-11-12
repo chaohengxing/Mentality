@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.agjsj.mentality.R;
 import com.agjsj.mentality.bean.appoint.TimeStatus;
+import com.agjsj.mentality.dialog.ShowMegDialog;
 import com.agjsj.mentality.param.ConstatParam;
 import com.orhanobut.logger.Logger;
 
@@ -51,7 +52,7 @@ public class TimeAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(final int i, View view, ViewGroup viewGroup) {
         ViewHolder holder = null;
         if (view == null) {
             view = mInflate.inflate(R.layout.textview_showtime_tea, null);
@@ -68,7 +69,21 @@ public class TimeAdapter extends BaseAdapter {
             holder.tv_time.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(context, "确定要发布次时间段空闲时间吗？", Toast.LENGTH_SHORT).show();
+                    ShowMegDialog dialog = new ShowMegDialog(context, "提示", "确认发布此时间段\n"
+                            + ConstatParam.timeTemplateMap.get(timeStatus.get(i).getId()).getTimeName()
+                            + "\n空闲时间吗？");
+                    dialog.show();
+                    dialog.setOnResultListener(new ShowMegDialog.OnResultListener() {
+                        @Override
+                        public void onOk() {
+
+                        }
+
+                        @Override
+                        public void onCancel() {
+
+                        }
+                    });
                 }
             });
         } else {

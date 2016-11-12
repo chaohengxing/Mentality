@@ -1,13 +1,16 @@
 package com.agjsj.mentality.adapter.appoint;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.agjsj.mentality.R;
 import com.agjsj.mentality.bean.appoint.AppointInfo;
+import com.agjsj.mentality.dialog.ShowMegDialog;
 import com.agjsj.mentality.myview.CircleImageView;
 import com.agjsj.mentality.myview.MySwipeHorizontalMenuLayout;
 import com.agjsj.mentality.ui.appoint.StudentAppointFragment;
@@ -16,6 +19,8 @@ import com.tubb.smrv.SwipeHorizontalMenuLayout;
 import com.tubb.smrv.SwipeMenuLayout;
 import com.tubb.smrv.listener.SwipeFractionListener;
 import com.tubb.smrv.listener.SwipeSwitchListener;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -26,6 +31,8 @@ import butterknife.ButterKnife;
 
 public class AppointHolder extends RecyclerView.ViewHolder {
 
+    @Bind(R.id.rl_item_appoint_stu)
+    RelativeLayout rl_item;
     @Bind(R.id.sml)
     MySwipeHorizontalMenuLayout swipeMenuLayout;
     @Bind(R.id.tv_name_appointInfo_item)
@@ -41,75 +48,25 @@ public class AppointHolder extends RecyclerView.ViewHolder {
     @Bind(R.id.btn_right_appoint_memu)
     Button btn_appoint;
 
+    private Context context;
 
     public AppointHolder(View itemView) {
         super(itemView);
+        this.context = context;
         ButterKnife.bind(this, itemView);
-
-        initListen();
     }
 
 
-    private void initListen() {
 
-        swipeMenuLayout.setSwipeListener(new SwipeSwitchListener() {
-            @Override
-            public void beginMenuClosed(SwipeMenuLayout swipeMenuLayout) {
-//                Logger.e("", "left menu closed");
-            }
-
-            @Override
-            public void beginMenuOpened(SwipeMenuLayout swipeMenuLayout) {
-
-            }
-
-            @Override
-            public void endMenuClosed(SwipeMenuLayout swipeMenuLayout) {
-//                Logger.e("", "right menu closed");
-            }
-
-            @Override
-            public void endMenuOpened(SwipeMenuLayout swipeMenuLayout) {
-//                Logger.e("", "right menu opened");
-            }
-        });
-
-        btn_appoint.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Logger.i("Appoint Button Click");
-            }
-        });
-    }
 
 
     public void doRecoverSwipeMenu() {
         if (swipeMenuLayout != null) {
-            if (swipeMenuLayout.isCurrentSwipeExit()) {
-                swipeMenuLayout.smoothCloseMenu(200);
+            if (swipeMenuLayout.isCurrentSwipeExit() && swipeMenuLayout.isMenuOpen()) {
+//                Logger.i("smoothCloseMenu");
+                swipeMenuLayout.smoothCloseEndMenu();
             }
-//            swipeMenuLayout.computeScroll();
-//            swipeMenuLayout.init();
         }
     }
-
-
-//        swipeMenuLayout.setSwipeFractionListener(new SwipeFractionListener() {
-//            @Override
-//            public void beginMenuSwipeFraction(SwipeMenuLayout swipeMenuLayout, float fraction) {
-//                Logger.e("", "top menu swipe fraction:"+fraction);
-//
-//            }
-//
-//            @Override
-//            public void endMenuSwipeFraction(SwipeMenuLayout swipeMenuLayout, float fraction) {
-//                Logger.e("","bottom menu swipe fraction:"+fraction);
-//            }
-//        });
-
-
-
-
-
 
 }

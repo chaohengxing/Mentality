@@ -7,10 +7,11 @@
 
 
     <TextView
-        android:gravity="center_horizontal"
+        android:textColor="@color/black"
+        android:gravity="center"
         android:text="TextView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:textSize="24sp"
         android:id="@+id/tv_date_appoint_tea"
         android:background="@color/c_f98800"

@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="110dp"
     android:background="#ffffff"
     android:layout_marginBottom="10dp"
     android:orientation="horizontal">
     <!-- this is the item front view -->
     <RelativeLayout
+        android:id="@+id/rl_item_appoint_stu"
         android:tag="front"
         android:background="@color/item_background"
         android:layout_width="match_parent"
@@ -16,7 +17,7 @@
         <LinearLayout
             android:id="@+id/ll_appointInfo_item"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -26,15 +27,17 @@
                 android:orientation="vertical">
 
                 <com.agjsj.mentality.myview.CircleImageView
+                    android:layout_weight="9"
                     android:id="@+id/iv_icon_appointInfo_itme"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:layout_alignParentLeft="true"
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp"
                     android:src="@drawable/logo" />
 
                 <TextView
+                    android:layout_weight="1"
                     android:id="@+id/tv_name_appointInfo_item"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -70,40 +73,6 @@
                     android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>
-    </RelativeLayout>
-
-    <!-- this view reveals when swipe right -->
-    <RelativeLayout
-        android:tag="reveal-right"
-        android:background="@color/accent"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:tint="@color/icons"
-            android:src="@drawable/ic_favorite_black_24dp" />
-    </RelativeLayout>
-
-    <!-- this view reveals when swipe left -->
-    <RelativeLayout
-        android:tag="reveal-left"
-        android:background="@color/primary"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
-            android:tint="@color/icons"
-            android:src="@drawable/ic_delete_black_24dp" />
     </RelativeLayout>
 
 </LinearLayout>
