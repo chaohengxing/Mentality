@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="red">#FF3030</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="yellow">#EEEE00</color>
+
+
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
     <color name="basecolor">#4f9ef6</color>
 
+
+    <color name="webview_progressbar">#00ff00</color>
 
 
     <color name="base_color_text_black">#3e3e39</color>
@@ -33,4 +41,11 @@
     <color name="color_msg_system_time_bg">#20000000</color>
     <color name="color_1e1e1e">#1e1e1e</color>
     <color name="color_b4">#b4b4b4</color>
+    <!-- 左右滑动有关 -->
+    <color name="primary">#2d2d2d</color>
+    <color name="secondary">#FF4081</color>
+    <color name="accent">#33b5e5</color>
+    <color name="divider">#CCC</color>
+    <color name="icons">#FFF</color>
+    <color name="item_background">#FFF</color>
 </resources>

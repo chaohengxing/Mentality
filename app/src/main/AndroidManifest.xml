@@ -65,7 +65,9 @@
             android:value="056b093c7e5f348fc8ea080de62d4a09" />
         <!-- bmobim end -->
 
-        <activity android:name=".ui.chat.activity.ChatActivity"></activity>
+        <activity android:name=".ui.chat.activity.ChatActivity" />
+        <activity android:name=".ui.jt.SayInfoActivity" />
+        <activity android:name=".ui.jt.ShareInfoActivity"></activity>
     </application>
 
 </manifest>

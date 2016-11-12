@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.agjsj.mentality.R;
+import com.agjsj.mentality.adapter.base.OnRecyclerViewListener;
 import com.agjsj.mentality.bean.jt.JtBean;
 import com.agjsj.mentality.network.JtNetWork;
 import com.agjsj.mentality.ui.MainActivity;
@@ -28,7 +29,7 @@ import butterknife.OnClick;
 /**
  * Created by HengXing on 2016/10/29.
  */
-public class JtFragment extends ParentWithNaviFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class JtFragment extends ParentWithNaviFragment implements SwipeRefreshLayout.OnRefreshListener, OnRecyclerViewListener, OnRecyclerViewImageListener {
     @Bind(R.id.recyclerview)
     RecyclerView recyclerview;
     @Bind(R.id.swiprefreshlayout)
@@ -53,7 +54,7 @@ public class JtFragment extends ParentWithNaviFragment implements SwipeRefreshLa
 
     @Override
     public Object right() {
-        return R.drawable.search_icon;
+        return R.drawable.plus_icon;
     }
 
     @Override
@@ -66,7 +67,7 @@ public class JtFragment extends ParentWithNaviFragment implements SwipeRefreshLa
 
             @Override
             public void clickRight() {
-                startActivity(SearchActivity.class, null);
+
             }
         };
     }
@@ -81,6 +82,7 @@ public class JtFragment extends ParentWithNaviFragment implements SwipeRefreshLa
         initRecycleView();
         getData();
 
+
         return rootView;
     }
 
@@ -90,7 +92,40 @@ public class JtFragment extends ParentWithNaviFragment implements SwipeRefreshLa
         recyclerview.setLayoutManager(layoutManager);
 
         adapter = new JtFragmentAdapter(getActivity(), jtBeens);
+        adapter.setOnRecyclerViewListener(this);
+        adapter.setOnRecyclerViewImageListener(this);
         recyclerview.setAdapter(adapter);
+    }
+
+    @Override
+    public void onImageItemClick(int itemPosition, int imagePosition) {
+
+        toast("显示第" + itemPosition + "个说说的第" + imagePosition + "张图片的大图");
+
+
+    }
+
+    @Override
+    public void onItemClick(int position) {
+
+        if (jtBeens.get(position).getJtType() == JtFragmentAdapter.TYPE_SAY) {
+            Bundle bundle = new Bundle();
+            bundle.putInt("id", jtBeens.get(position).getId());
+            startActivity(SayInfoActivity.class, bundle);
+
+
+        } else if (jtBeens.get(position).getJtType() == JtFragmentAdapter.TYPE_SHARE) {
+
+            Bundle bundle = new Bundle();
+            bundle.putString("from", jtBeens.get(position).getFrom());
+            bundle.putString("shareUrl", jtBeens.get(position).getShareUrl());
+            startActivity(ShareInfoActivity.class, bundle);
+        }
+    }
+
+    @Override
+    public boolean onItemLongClick(int position) {
+        return false;
     }
 
     /**
@@ -127,4 +162,6 @@ public class JtFragment extends ParentWithNaviFragment implements SwipeRefreshLa
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
+
+
 }

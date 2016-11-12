@@ -3,13 +3,16 @@ package com.agjsj.mentality.adapter.appoint;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.agjsj.mentality.R;
 import com.agjsj.mentality.bean.appoint.TimeStatus;
+import com.agjsj.mentality.dialog.ShowMegDialog;
 import com.agjsj.mentality.param.ConstatParam;
 import com.orhanobut.logger.Logger;
 
@@ -49,7 +52,7 @@ public class TimeAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(final int i, View view, ViewGroup viewGroup) {
         ViewHolder holder = null;
         if (view == null) {
             view = mInflate.inflate(R.layout.textview_showtime_tea, null);
@@ -59,12 +62,38 @@ public class TimeAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) view.getTag();
         }
-        Logger.i("TimeAdapter" + "timeStatus.get(i).getId()：" + timeStatus.get(i).getId() + "\n" + ConstatParam.timeTemplateMap.get(timeStatus.get(i).getId()).getTimeName() + "");
+        //Logger.i("TimeAdapter" + "timeStatus.get(i).getId()：" + timeStatus.get(i).getId() + "\n" + ConstatParam.timeTemplateMap.get(timeStatus.get(i).getId()).getTimeName() + "");
         holder.tv_time.setText(ConstatParam.timeTemplateMap.get(timeStatus.get(i).getId()).getTimeName() + "");
         if (timeStatus.get(i).isStatus()) {
             holder.tv_time.setBackgroundColor(Color.WHITE);
+            holder.tv_time.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ShowMegDialog dialog = new ShowMegDialog(context, "提示", "确认发布此时间段\n"
+                            + ConstatParam.timeTemplateMap.get(timeStatus.get(i).getId()).getTimeName()
+                            + "\n空闲时间吗？");
+                    dialog.show();
+                    dialog.setOnResultListener(new ShowMegDialog.OnResultListener() {
+                        @Override
+                        public void onOk() {
+
+                        }
+
+                        @Override
+                        public void onCancel() {
+
+                        }
+                    });
+                }
+            });
         } else {
             holder.tv_time.setBackgroundColor(Color.GRAY);
+            holder.tv_time.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    return true;
+                }
+            });
         }
 
         return view;

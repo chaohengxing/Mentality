@@ -9,9 +9,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.agjsj.mentality.R;
+import com.agjsj.mentality.dialog.ShowMegDialog;
 import com.agjsj.mentality.myview.CircleImageView;
 import com.agjsj.mentality.utils.PicassoUtils;
+import com.orhanobut.logger.Logger;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
+import com.tubb.smrv.SwipeMenuLayout;
+import com.tubb.smrv.listener.SwipeSwitchListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -20,11 +27,16 @@ import butterknife.ButterKnife;
  * Created by YH on 2016/11/5.
  */
 
-public class AppointStiRecyHeaderAdapter extends BaseAppointAdapter<RecyclerView.ViewHolder> implements StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder> {
+public class AppointStiRecyHeaderAdapter extends BaseAppointAdapter<AppointHolder> implements StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder> {
 
     private Context context;
+    private List<AppointHolder> holders = new ArrayList<>();
 
     public AppointStiRecyHeaderAdapter() {
+    }
+
+    public List<AppointHolder> getHolders() {
+        return holders;
     }
 
     public AppointStiRecyHeaderAdapter(Context context) {
@@ -32,32 +44,87 @@ public class AppointStiRecyHeaderAdapter extends BaseAppointAdapter<RecyclerView
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public AppointHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_appoint_stu, parent, false);
-        return new ItemViewHolder(view);
+        AppointHolder holder = new AppointHolder(view);
+        holders.add(holder);
+        return holder;
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ItemViewHolder mHolder = (ItemViewHolder) holder;
+    public void onBindViewHolder(final AppointHolder holder, final int position) {
         if (position == 0) {
-            mHolder.ll_appointInfo.setVisibility(View.GONE);
+            holder.swipeMenuLayout.setVisibility(View.GONE);
         } else {
-            mHolder.ll_appointInfo.setVisibility(View.VISIBLE);
-            mHolder.tv_name.setText(getItem(position).getTeacherName() + "");
-            mHolder.tv_time.setText(getItem(position).getTime() + "");
-            mHolder.tv_major.setText(getItem(position).getMarjor() + "");
-            PicassoUtils.loadResourceImage(R.drawable.ic_launcher, 80, 80, mHolder.iv_icon);
+            holder.swipeMenuLayout.setVisibility(View.VISIBLE);
+            holder.tv_name.setText(getItem(position).getTeacherName() + "");
+            holder.tv_time.setText(getItem(position).getTime() + "");
+            holder.tv_major.setText(getItem(position).getMarjor() + "");
+            PicassoUtils.loadResourceImage(R.drawable.logo, 80, 80, holder.iv_icon);
         }
+        //左右滑动监听时间
+        holder.swipeMenuLayout.setSwipeListener(new SwipeSwitchListener() {
+            @Override
+            public void beginMenuClosed(SwipeMenuLayout swipeMenuLayout) {
+//                Logger.e("", "left menu closed");
+            }
+
+            @Override
+            public void beginMenuOpened(SwipeMenuLayout swipeMenuLayout) {
+
+            }
+
+            @Override
+            public void endMenuClosed(SwipeMenuLayout swipeMenuLayout) {
+//                Logger.e("", "right menu closed");
+
+            }
+
+            @Override
+            public void endMenuOpened(SwipeMenuLayout swipeMenuLayout) {
+//                Logger.e("", "right menu opened");
+                for (int i = 0; i < holders.size(); i++) {
+                    if (i != position && holders.get(i).swipeMenuLayout.isCurrentSwipeExit()) {
+                        holders.get(i).doRecoverSwipeMenu();
+                    }
+                }
+            }
+        });
+
+        //预约点击监听事件
+        holder.btn_appoint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Logger.i("Appoint Button Click");
+                ShowMegDialog dialog = new ShowMegDialog(context, "提示", "确定预约此时间段:\n" + getItem(position).getTime() + "\n"
+                        + getItem(position).getTeacherName() + "？");
+                dialog.show();
+                dialog.setOnResultListener(new ShowMegDialog.OnResultListener() {
+                    @Override
+                    public void onOk() {
+                        Logger.i("OnOk");
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        Logger.i("onCancel");
+                    }
+                });
+
+            }
+        });
+
     }
+
 
     @Override
     public long getHeaderId(int position) {
         if (position == 0) {
             return -1;
         } else {
-            return getItem(position).getDate().hashCode();
+//            Logger.i(getItem(position).getDate()+":"+getItem(position).getDate().hashCode());
+            return Math.abs(getItem(position).getDate().hashCode());
         }
     }
 
@@ -71,26 +138,10 @@ public class AppointStiRecyHeaderAdapter extends BaseAppointAdapter<RecyclerView
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int position) {
         TitleViewHolder mHolder = (TitleViewHolder) holder;
+        Logger.i("getItem(position).getDate():" + getItem(position).getDate());
         mHolder.tv_time.setText(getItem(position).getDate());
     }
 
-    class ItemViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv_name_appointInfo_item)
-        TextView tv_name;
-        @Bind(R.id.tv_time_appointInfo_item)
-        TextView tv_time;
-        @Bind(R.id.tv_major_appointInfo_item)
-        TextView tv_major;
-        @Bind(R.id.iv_icon_appointInfo_itme)
-        CircleImageView iv_icon;
-        @Bind(R.id.ll_appointInfo_item)
-        LinearLayout ll_appointInfo;
-
-        public ItemViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-    }
 
     class TitleViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.tv_time_view_appoint_stu)
