@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="30dp"
+    android:layout_marginBottom="10dp"
+    android:layout_marginTop="10dp">
+
+    <TextView
+        android:id="@+id/tv_like"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="25dp"
+        android:drawableLeft="@drawable/jt_like"
+        android:drawablePadding="5dp"
+        android:gravity="center"
+        android:text="(0)"
+        android:textColor="@color/color_bottom_text_normal"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tv_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="20dp"
+        android:layout_toLeftOf="@id/tv_like"
+        android:drawableLeft="@drawable/jt_comment_pressed"
+        android:drawablePadding="5dp"
+        android:gravity="center"
+        android:text="评论"
+        android:textColor="@color/color_bottom_text_normal"
+        android:textSize="12sp" />
+</RelativeLayout>

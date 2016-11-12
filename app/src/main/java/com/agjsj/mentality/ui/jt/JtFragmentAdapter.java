@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import com.agjsj.mentality.R;
 import com.agjsj.mentality.adapter.base.BaseViewHolder;
+import com.agjsj.mentality.adapter.base.OnRecyclerViewListener;
 import com.agjsj.mentality.bean.jt.JtBean;
 import com.orhanobut.logger.Logger;
 
@@ -17,8 +18,8 @@ import java.util.List;
 public class JtFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
-    private final int TYPE_SAY = 0;
-    private final int TYPE_SHARE = 1;
+    public static final int TYPE_SAY = 0;
+    public static final int TYPE_SHARE = 1;
 
 
     private Context context;
@@ -35,15 +36,17 @@ public class JtFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         if (viewType == TYPE_SAY) {
             //说说的viewholder
-            return new SayViewHolder(context, parent, null);
+            return new SayViewHolder(context, parent, onRecyclerViewListener, onRecyclerViewImageListener);
         } else if (viewType == TYPE_SHARE) {
             //分享的viewholder
 
-            return new ShareViewHolder(context, parent, R.layout.item_jt_share, null);
+            return new ShareViewHolder(context, parent, onRecyclerViewListener);
         } else {
 
             return null;
         }
+
+
 
     }
 
@@ -68,5 +71,17 @@ public class JtFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public int getItemCount() {
         return jtBaens.size();
+    }
+
+    private OnRecyclerViewListener onRecyclerViewListener;
+
+    public void setOnRecyclerViewListener(OnRecyclerViewListener onRecyclerViewListener) {
+        this.onRecyclerViewListener = onRecyclerViewListener;
+    }
+
+    private OnRecyclerViewImageListener onRecyclerViewImageListener;
+
+    public void setOnRecyclerViewImageListener(OnRecyclerViewImageListener onRecyclerViewImageListener) {
+        this.onRecyclerViewImageListener = onRecyclerViewImageListener;
     }
 }

@@ -1,58 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
 
-    <RelativeLayout
+    <include
+        layout="@layout/include_jt_item_userinfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
-
-        <com.agjsj.mentality.myview.CircleImageView
-            android:id="@+id/iv_user_icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_margin="5dp"
-            android:src="@drawable/logo" />
-
-        <TextView
-            android:id="@+id/tv_nickname"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@id/iv_user_icon"
-            android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@id/iv_user_icon"
-            android:text="用户昵称"
-            android:textColor="@android:color/black"
-            android:textSize="15sp" />
-
-        <TextView
-            android:id="@id/tv_time"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/tv_nickname"
-            android:layout_below="@id/tv_nickname"
-            android:layout_marginTop="5dp"
-            android:layout_toRightOf="@id/iv_user_icon"
-            android:text="2016-11-11"
-            android:textColor="@color/color_bottom_text_normal"
-            android:textSize="12sp" />
-
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/tv_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="10dp"
-        android:maxLines="5"
-        android:textColor="@android:color/black"
-        android:textSize="15sp" />
-
+        android:layout_marginTop="10dp" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyc_imags"
@@ -63,40 +23,13 @@
     </android.support.v7.widget.RecyclerView>
 
 
-    <RelativeLayout
+    <include
+        layout="@layout/include_jt_item_comment_bar"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp" />
 
-        <TextView
-            android:id="@+id/tv_like"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="25dp"
-            android:drawableLeft="@drawable/jt_like"
-            android:drawablePadding="5dp"
-            android:gravity="center"
-            android:text="(0)"
-            android:textColor="@color/color_bottom_text_normal"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/tv_comment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
-            android:layout_toLeftOf="@id/tv_like"
-            android:drawableLeft="@drawable/jt_comment_pressed"
-            android:drawablePadding="5dp"
-            android:gravity="center"
-            android:text="评论"
-            android:textColor="@color/color_bottom_text_normal"
-            android:textSize="12sp" />
-    </RelativeLayout>
 
     <ImageView
         android:layout_width="match_parent"
