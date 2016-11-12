@@ -22,6 +22,77 @@ public class JtBean {
     private int likes;
     private boolean islikes;
 
+    //分享类的JtBean
+    private String preImage;
+    private String title;
+    private String from;
+    private String shareUrl;
+
+    private List<JtDiscuss> discusses;
+
+
+    @Override
+    public String toString() {
+        return "JtBean{" +
+                "id=" + id +
+                ", userType=" + userType +
+                ", stuId=" + stuId +
+                ", teacherId=" + teacherId +
+                ", userInfo=" + userInfo +
+                ", content='" + content + '\'' +
+                ", images=" + images +
+                ", createDate=" + createDate +
+                ", jtType=" + jtType +
+                ", likes=" + likes +
+                ", islikes=" + islikes +
+                ", preImage='" + preImage + '\'' +
+                ", title='" + title + '\'' +
+                ", from='" + from + '\'' +
+                ", shareUrl='" + shareUrl + '\'' +
+                ", discusses=" + discusses +
+                '}';
+    }
+
+    public List<JtDiscuss> getDiscusses() {
+        return discusses;
+    }
+
+    public void setDiscusses(List<JtDiscuss> discusses) {
+        this.discusses = discusses;
+    }
+
+    public String getShareUrl() {
+        return shareUrl;
+    }
+
+    public void setShareUrl(String shareUrl) {
+        this.shareUrl = shareUrl;
+    }
+
+    public String getPreImage() {
+        return preImage;
+    }
+
+    public void setPreImage(String preImage) {
+        this.preImage = preImage;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
+
     public boolean islikes() {
         return islikes;
     }
@@ -30,21 +101,6 @@ public class JtBean {
         this.islikes = islikes;
     }
 
-    @Override
-    public String toString() {
-        return getClass().getName() + "{" +
-                "id=" + id +
-                ", userType=" + userType +
-                ", stuId=" + stuId +
-                ", teacherId=" + teacherId +
-                ", userInfo=" + userInfo +
-                ", content='" + content + '\'' +
-                ", images=" + images +
-                ", createDate='" + createDate + '\'' +
-                ", jtType=" + jtType +
-                ", likes=" + likes +
-                '}';
-    }
 
     public int getId() {
         return id;

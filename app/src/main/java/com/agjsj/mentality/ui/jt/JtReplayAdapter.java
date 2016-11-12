@@ -6,36 +6,36 @@ import android.view.ViewGroup;
 
 import com.agjsj.mentality.adapter.base.BaseViewHolder;
 import com.agjsj.mentality.adapter.base.OnRecyclerViewListener;
+import com.agjsj.mentality.bean.jt.JtDiscussReplay;
 
 import java.util.List;
 
 /**
- * Created by HengXing on 2016/11/6.
+ * Created by HengXing on 2016/11/8.
  */
-public class JtImageAdapter extends RecyclerView.Adapter {
-
+public class JtReplayAdapter extends RecyclerView.Adapter {
     private Context context;
-    private List<String> images;
+    private List<JtDiscussReplay> replays;
 
-    public JtImageAdapter(Context context, List<String> images) {
+    public JtReplayAdapter(Context context, List<JtDiscussReplay> replays) {
         this.context = context;
-        this.images = images;
+        this.replays = replays;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new JtImageViewHolder(context, parent, onRecyclerViewListener);
+        return new JtReplayViewHolder(context, parent, onRecyclerViewListener);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((BaseViewHolder) holder).bindData(images.get(position));
 
+        ((BaseViewHolder) holder).bindData(replays.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return images.size();
+        return replays.size();
     }
 
     private OnRecyclerViewListener onRecyclerViewListener;
@@ -43,4 +43,5 @@ public class JtImageAdapter extends RecyclerView.Adapter {
     public void setOnRecyclerViewListener(OnRecyclerViewListener onRecyclerViewListener) {
         this.onRecyclerViewListener = onRecyclerViewListener;
     }
+
 }
