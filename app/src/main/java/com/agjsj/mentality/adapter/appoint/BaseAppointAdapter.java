@@ -3,6 +3,7 @@ package com.agjsj.mentality.adapter.appoint;
 import android.support.v7.widget.RecyclerView;
 
 import com.agjsj.mentality.bean.appoint.AppointInfo;
+import com.agjsj.mentality.bean.appoint.FreeTime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,27 +16,27 @@ import java.util.Collection;
 public abstract class BaseAppointAdapter<VH extends RecyclerView.ViewHolder>
         extends RecyclerView.Adapter<VH> {
 
-    private ArrayList<AppointInfo> items = new ArrayList<AppointInfo>();
+    private ArrayList<FreeTime> items = new ArrayList<FreeTime>();
 
 
-    public void add(AppointInfo object) {
+    public void add(FreeTime object) {
         items.add(object);
         notifyDataSetChanged();
     }
 
-    public void add(int index, AppointInfo object) {
+    public void add(int index, FreeTime object) {
         items.add(index, object);
         notifyDataSetChanged();
     }
 
-    public void addAll(Collection<? extends AppointInfo> collection) {
+    public void addAll(Collection<? extends FreeTime> collection) {
         if (collection != null) {
             items.addAll(collection);
             notifyDataSetChanged();
         }
     }
 
-    public void addAll(AppointInfo... items) {
+    public void addAll(FreeTime... items) {
         addAll(Arrays.asList(items));
     }
 
@@ -49,7 +50,7 @@ public abstract class BaseAppointAdapter<VH extends RecyclerView.ViewHolder>
         notifyDataSetChanged();
     }
 
-    public AppointInfo getItem(int position) {
+    public FreeTime getItem(int position) {
         return items.get(position);
     }
 

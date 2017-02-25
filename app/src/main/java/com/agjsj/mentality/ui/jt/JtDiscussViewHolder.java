@@ -9,8 +9,8 @@ import android.widget.TextView;
 import com.agjsj.mentality.R;
 import com.agjsj.mentality.adapter.base.BaseViewHolder;
 import com.agjsj.mentality.adapter.base.OnRecyclerViewListener;
-import com.agjsj.mentality.bean.jt.JtDiscuss;
-import com.agjsj.mentality.bean.jt.JtDiscussReplay;
+import com.agjsj.mentality.bean.jt.DiscussJt;
+import com.agjsj.mentality.bean.user.UserType;
 import com.agjsj.mentality.myview.CircleImageView;
 import com.agjsj.mentality.utils.PicassoUtils;
 import com.agjsj.mentality.utils.TimeUtil;
@@ -40,14 +40,21 @@ public class JtDiscussViewHolder extends BaseViewHolder {
 
     @Override
     public void bindData(Object o) {
-        JtDiscuss jtDiscuss = (JtDiscuss) o;
-        PicassoUtils.loadResizeImage(jtDiscuss.getCommentUserInfo().getUserIcon(), R.drawable.logo, R.drawable.logo, 50, 50, ivUserIcon);
-        tvNickname.setText(jtDiscuss.getCommentUserInfo().getNickName());
-        tvTime.setText(TimeUtil.getChatTime(false, jtDiscuss.getCommmentTime()));
-        tvContent.setText(jtDiscuss.getCommentInfo());
+        DiscussJt jtDiscuss = (DiscussJt) o;
+        if (UserType.StudentType == jtDiscuss.getUserType()) {
+            PicassoUtils.loadResizeImage(jtDiscuss.getStudentInfo().getStuIcon(), R.drawable.logo, R.drawable.logo, 50, 50, ivUserIcon);
+            tvNickname.setText(jtDiscuss.getStudentInfo().getStuNickName());
+
+        } else if (UserType.TeacherType == jtDiscuss.getUserType()) {
+            PicassoUtils.loadResizeImage(jtDiscuss.getTeacherInfo().getTeacherIcon(), R.drawable.logo, R.drawable.logo, 50, 50, ivUserIcon);
+            tvNickname.setText(jtDiscuss.getTeacherInfo().getTeacherNickName());
+
+        }
+        tvTime.setText(TimeUtil.getChatTime(false, Long.parseLong(jtDiscuss.getDiscussTime())));
+        tvContent.setText(jtDiscuss.getDiscussInfo());
 
         recyclerview.setLayoutManager(new LinearLayoutManager(context));
-        JtReplayAdapter adapter = new JtReplayAdapter(context,jtDiscuss.getReplays());
+        JtReplayAdapter adapter = new JtReplayAdapter(context, jtDiscuss.getReplayDiscussJts());
         recyclerview.setAdapter(adapter);
 
     }

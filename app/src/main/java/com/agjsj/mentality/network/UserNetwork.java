@@ -2,11 +2,21 @@ package com.agjsj.mentality.network;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.agjsj.mentality.application.MyApplication;
-import com.agjsj.mentality.bean.MyUser;
+import com.agjsj.mentality.bean.BaseEntity;
+import com.agjsj.mentality.bean.user.MyUser;
+import com.agjsj.mentality.bean.user.UserType;
+import com.agjsj.mentality.utils.HttpUtils;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.support.config.FastJsonConfig;
+import com.google.gson.Gson;
 import com.orhanobut.logger.Logger;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Date;
 
@@ -15,9 +25,10 @@ import cn.bmob.newim.bean.BmobIMConversation;
 import cn.bmob.newim.bean.BmobIMMessage;
 import cn.bmob.newim.bean.BmobIMUserInfo;
 import cn.bmob.newim.event.MessageEvent;
-import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.BmobListener;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -26,6 +37,8 @@ import cn.bmob.v3.listener.BmobListener;
 public class UserNetwork {
 
 
+    private UserNetworkService userNetworkService;
+
     private static UserNetwork instance = new UserNetwork();
 
     public static UserNetwork getInstance() {
@@ -33,6 +46,7 @@ public class UserNetwork {
     }
 
     private UserNetwork() {
+        userNetworkService = HttpUtils.createService(UserNetworkService.class);
     }
 
 
@@ -44,37 +58,41 @@ public class UserNetwork {
         public void loginResponse(int responseCode);
     }
 
-    public void login(String username, String password, LoginCallBack loginCallBack) {
+    public void login(String username, String password, final LoginCallBack loginCallBack) {
 
-        //请求网络
-        if (true) {
-            //登录成功，拿到服务端返回的用户信息，登录成功后将用户信息存入本地
+        userNetworkService.loginService(username, password)
+                .subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<BaseEntity>() {
+                    @Override
+                    public void onCompleted() {
+                    }
 
-            MyUser myUser = new MyUser();
-            myUser.setId(99);
-            myUser.setOpenId("123456789");
-            myUser.setUserIcon("http://life.people.com.cn/NMediaFile/2015/0618/MAIN201506181420187740456986383.jpg");
-            myUser.setUserName("测试用户名");
-            myUser.setNickName("测试昵称");
-            myUser.setPassword("123456");
-            myUser.setUserType(1);
-            myUser.setLastAlterTime(new Date().getTime());
-            myUser.setLastLoginTime(new Date().getTime());
-            updateCurrentUser(myUser);
-            //返回登录结果
-            loginCallBack.loginResponse(LOGIN_YES);
-        } else {
-            //登录失败
-            loginCallBack.loginResponse(LOGIN_NO);
-        }
+                    @Override
+                    public void onError(Throwable e) {
+                        loginCallBack.loginResponse(LOGIN_NO);
+                    }
 
+                    @Override
+                    public void onNext(BaseEntity baseEntity) {
+                        if (200 == baseEntity.getCode()) {
+                            MyUser myUser = new Gson().fromJson(baseEntity.getData(), MyUser.class);
+                            updateCurrentUser(myUser);
+                            //返回登录结果
+                            loginCallBack.loginResponse(LOGIN_YES);
+                        } else {
+                            //登录失败
+                            loginCallBack.loginResponse(LOGIN_NO);
+                        }
 
+                    }
+                });
     }
 
     //-------------------------------------获取当前用户------------------------------
     public MyUser getCurrentUser() {
         SharedPreferences sharedPreferences = MyApplication.INSTANCE().getSharedPreferences("currentUser", Context.MODE_PRIVATE);
-        if (sharedPreferences.getInt("_id", -1) == -1) {
+        if (TextUtils.isEmpty(sharedPreferences.getString("id", ""))) {
             return null;
         } else if (new Date().getTime() - sharedPreferences.getLong("lastLoginTime", -1) >= 3600 * 24 * 30) {
             //登录超时，删除本地用户信息
@@ -83,15 +101,17 @@ public class UserNetwork {
         } else {
             //获取用户，并返回
             MyUser myUser = new MyUser();
-            myUser.setId(sharedPreferences.getInt("_id", -1));
-            myUser.setOpenId(sharedPreferences.getString("openId", ""));
-            myUser.setUserIcon(sharedPreferences.getString("userIcon", ""));
-            myUser.setUserName(sharedPreferences.getString("userName", ""));
-            myUser.setNickName(sharedPreferences.getString("nickName", ""));
-            myUser.setPassword(sharedPreferences.getString("password", ""));
+            myUser.setId(sharedPreferences.getString("id", ""));
             myUser.setUserType(sharedPreferences.getInt("userType", -1));
-            myUser.setLastAlterTime(sharedPreferences.getLong("lastAlterTime", -1));
-            myUser.setLastLoginTime(sharedPreferences.getLong("lastLoginTime", -1));
+            myUser.setUserClass(sharedPreferences.getString("userClass", ""));
+            myUser.setUserMajor(sharedPreferences.getString("userMajor", ""));
+            myUser.setRegisterTime(sharedPreferences.getString("registerTime", ""));
+            myUser.setStuIcon(sharedPreferences.getString("stuIcon", ""));
+            myUser.setStuStatus(sharedPreferences.getInt("stuStatus", -1));
+            myUser.setStuNickName(sharedPreferences.getString("stuNickName", ""));
+            myUser.setTeacherNickName(sharedPreferences.getString("teacherNickName", ""));
+            myUser.setTeacherIntro(sharedPreferences.getString("teacherIntro", ""));
+            myUser.setTeacherIcon(sharedPreferences.getString("teacherIcon", ""));
             return myUser;
         }
     }
@@ -100,16 +120,18 @@ public class UserNetwork {
     public void updateCurrentUser(MyUser myUser) {
         SharedPreferences sharedPreferences = MyApplication.INSTANCE().getSharedPreferences("currentUser", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("_id", myUser.getId());
-        editor.putString("openId", myUser.getOpenId());
-        editor.putString("userIcon", myUser.getUserIcon());
-        editor.putString("userName", myUser.getUserName());
-        editor.putString("nickName", myUser.getNickName());
-        editor.putString("password", myUser.getPassword());
+        editor.putString("id", myUser.getId());
         editor.putInt("userType", myUser.getUserType());
-        editor.putLong("lastAlterTime", myUser.getLastAlterTime());
-        editor.putLong("lastLoginTime", myUser.getLastLoginTime());
-
+        editor.putString("userClass", myUser.getUserClass());
+        editor.putString("userMajor", myUser.getUserMajor());
+        editor.putString("registerTime", myUser.getRegisterTime());
+        editor.putString("stuIcon", myUser.getStuIcon());
+        editor.putInt("stuStatus", myUser.getStuStatus());
+        editor.putString("stuNickName", myUser.getNickName());
+        editor.putString("teacherNickName", myUser.getTeacherNickName());
+        editor.putString("teacherIntro", myUser.getTeacherIntro());
+        editor.putString("teacherIcon", myUser.getTeacherIcon());
+        editor.putLong("lastLoginTime", new Date().getTime());
         editor.commit();
 
     }
@@ -134,9 +156,9 @@ public class UserNetwork {
         //从网络中查该人的信息
         if (true) {
             MyUser myUser = new MyUser();
-            myUser.setId(Integer.valueOf(objectId));
-            myUser.setUserName("测试");
-            myUser.setUserIcon("http://images.china.cn/attachement/png/site1000/20150930/ac9e178530e11775d4363d.png");
+//            myUser.setId(Integer.valueOf(objectId));
+//            myUser.setUserName("测试");
+//            myUser.setUserIcon("http://images.china.cn/attachement/png/site1000/20150930/ac9e178530e11775d4363d.png");
             listener.done(myUser, null);
         } else {
             listener.internalDone(new BmobException(000, "查无此人"));
@@ -164,8 +186,15 @@ public class UserNetwork {
                 @Override
                 public void done(MyUser s, BmobException e) {
                     if (e == null) {
-                        String name = s.getUserName();
-                        String avatar = s.getUserIcon();
+                        String name = null;
+                        String avatar = null;
+                        if (UserType.StudentType == s.getUserType()) {
+                            name = s.getStuNickName();
+                            avatar = s.getStuIcon();
+                        } else if (UserType.TeacherType == s.getUserType()) {
+                            name = s.getTeacherNickName();
+                            avatar = s.getTeacherIcon();
+                        }
                         Logger.i("query success：" + name + "," + avatar);
                         conversation.setConversationIcon(avatar);
                         conversation.setConversationTitle(name);

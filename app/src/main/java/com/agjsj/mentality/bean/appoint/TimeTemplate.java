@@ -1,67 +1,87 @@
 package com.agjsj.mentality.bean.appoint;
 
-import java.io.Serializable;
+public class TimeTemplate {
 
-/**
- * 时间模板，本地只能有一份，当服务器更新时要保持更新
- * Created by YH on 2016/11/5.
- */
+	private String id;
+	private String timeName;
+	private String timeStart;
+	private String timeEnd;
 
-public class TimeTemplate implements Serializable {
-    private int timeId;
-    private String timeVersion;
-    private String timeName;
-    private String timeStart;
-    private String timeEnd;
+	private boolean isPlan;
 
-    public int getTimeId() {
-        return timeId;
-    }
+	/**
+	 * @return the isPlan
+	 */
+	public boolean isPlan() {
+		return isPlan;
+	}
 
-    public void setTimeId(int timeId) {
-        this.timeId = timeId;
-    }
+	/**
+	 * @param isPlan
+	 *            the isPlan to set
+	 */
+	public void setPlan(boolean isPlan) {
+		this.isPlan = isPlan;
+	}
 
-    public String getTimeVersion() {
-        return timeVersion;
-    }
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
 
-    public void setTimeVersion(String timeVersion) {
-        this.timeVersion = timeVersion;
-    }
+	/**
+	 * @param id
+	 *            the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    public String getTimeName() {
-        return timeName;
-    }
+	/**
+	 * @return the timeName
+	 */
+	public String getTimeName() {
+		return timeName;
+	}
 
-    public void setTimeName(String timeName) {
-        this.timeName = timeName;
-    }
+	/**
+	 * @param timeName
+	 *            the timeName to set
+	 */
+	public void setTimeName(String timeName) {
+		this.timeName = timeName;
+	}
 
-    public String getTimeStart() {
-        return timeStart;
-    }
+	/**
+	 * @return the timeStart
+	 */
+	public String getTimeStart() {
+		return timeStart;
+	}
 
-    public void setTimeStart(String timeStart) {
-        this.timeStart = timeStart;
-    }
+	/**
+	 * @param timeStart
+	 *            the timeStart to set
+	 */
+	public void setTimeStart(String timeStart) {
+		this.timeStart = timeStart;
+	}
 
-    public String getTimeEnd() {
-        return timeEnd;
-    }
+	/**
+	 * @return the timeEnd
+	 */
+	public String getTimeEnd() {
+		return timeEnd;
+	}
 
-    public void setTimeEnd(String timeEnd) {
-        this.timeEnd = timeEnd;
-    }
+	/**
+	 * @param timeEnd
+	 *            the timeEnd to set
+	 */
+	public void setTimeEnd(String timeEnd) {
+		this.timeEnd = timeEnd;
+	}
 
-    @Override
-    public String toString() {
-        return "TimeTemplate{" +
-                "timeId=" + timeId +
-                ", timeVersion='" + timeVersion + '\'' +
-                ", timeName='" + timeName + '\'' +
-                ", timeStart='" + timeStart + '\'' +
-                ", timeEnd='" + timeEnd + '\'' +
-                '}';
-    }
 }

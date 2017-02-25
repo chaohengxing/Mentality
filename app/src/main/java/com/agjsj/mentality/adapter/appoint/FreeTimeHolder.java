@@ -34,9 +34,9 @@ public class FreeTimeHolder extends BaseViewHolder<FreeTime> {
 
     @Override
     public void bindData(FreeTime freeTime) {
-        Logger.i("freeTime.getDate()" + freeTime.getDate());
-        tv_date.setText(freeTime.getDate());
-        TimeAdapter mAdapter = new TimeAdapter(context, freeTime.getTimeStatus());
-        mGridView.setAdapter(mAdapter);
+//        Logger.i("freeTime.getDate()" + freeTime.getDate());
+//        tv_date.setText(freeTime.getDate());
+//        TimeAdapter mAdapter = new TimeAdapter(context, freeTime.getTimeStatus());
+//        mGridView.setAdapter(mAdapter);
     }
 }

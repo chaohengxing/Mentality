@@ -7,7 +7,8 @@ import android.widget.TextView;
 import com.agjsj.mentality.R;
 import com.agjsj.mentality.adapter.base.BaseViewHolder;
 import com.agjsj.mentality.adapter.base.OnRecyclerViewListener;
-import com.agjsj.mentality.bean.jt.JtDiscussReplay;
+import com.agjsj.mentality.bean.jt.ReplayDiscussJt;
+import com.agjsj.mentality.bean.user.UserType;
 
 import butterknife.Bind;
 
@@ -28,9 +29,22 @@ public class JtReplayViewHolder extends BaseViewHolder {
 
     @Override
     public void bindData(Object o) {
-        JtDiscussReplay replay = (JtDiscussReplay) o;
-        tvReplayUserNickName.setText(replay.getReplayUser().getNickName());
-        tvPassiveUserNickName.setText(replay.getPassiverUser().getNickName());
+        ReplayDiscussJt replay = (ReplayDiscussJt) o;
+        if (UserType.StudentType == replay.getReplayUserType()) {
+            tvReplayUserNickName.setText(replay.getReplayStudentInfo().getStuNickName());
+
+        } else if (UserType.TeacherType == replay.getReplayUserType()) {
+            tvReplayUserNickName.setText(replay.getReplayTeacherInfo().getTeacherNickName());
+
+        }
+
+        if (UserType.StudentType == replay.getPassiveUserType()) {
+            tvPassiveUserNickName.setText(replay.getPassiveStudentInfo().getStuNickName());
+
+        } else if (UserType.TeacherType == replay.getPassiveUserType()) {
+            tvPassiveUserNickName.setText(replay.getPassiveTeacherInfo().getTeacherNickName());
+
+        }
         tvContent.setText(":" + replay.getReplayInfo());
 
     }

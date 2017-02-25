@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <com.agjsj.mentality.myview.MySwipeHorizontalMenuLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:sml="http://schemas.android.com/apk/res-auto"
         android:id="@+id/sml"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        sml:sml_scroller_interpolator="@android:anim/accelerate_decelerate_interpolator"
         sml:sml_auto_open_percent="0.4"
-        sml:sml_scroller_duration="250">
+        sml:sml_scroller_duration="250"
+        sml:sml_scroller_interpolator="@android:anim/accelerate_decelerate_interpolator">
 
         <include
             android:id="@id/smContentView"

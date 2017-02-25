@@ -1,4 +1,4 @@
-package com.agjsj.mentality.bean;
+package com.agjsj.mentality.bean.user;
 
 /**
  * Created by YH on 2016/11/5.

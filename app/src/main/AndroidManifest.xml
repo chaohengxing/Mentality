@@ -67,7 +67,15 @@
 
         <activity android:name=".ui.chat.activity.ChatActivity" />
         <activity android:name=".ui.jt.SayInfoActivity" />
-        <activity android:name=".ui.jt.ShareInfoActivity"></activity>
+        <activity android:name=".ui.jt.ShareInfoActivity" />
+        <activity android:name=".ui.jt.SendJtActivity" />
+        <activity android:name=".ui.jt.ShareJtActivity" />
+        <activity android:name=".ui.teachers.TeacherInfoActivity"></activity>
+        <activity android:name=".ui.photo.ViewPagerActivity"></activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>

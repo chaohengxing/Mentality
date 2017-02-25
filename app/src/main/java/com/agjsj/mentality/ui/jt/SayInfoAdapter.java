@@ -37,7 +37,7 @@ public class SayInfoAdapter extends RecyclerView.Adapter {
     public int getItemViewType(int position) {
         if (position == 0) {
             return JT_INFO;
-        } else{
+        } else {
             return JT_DISCUSS;
         }
 
@@ -62,14 +62,14 @@ public class SayInfoAdapter extends RecyclerView.Adapter {
         if (getItemViewType(position) == JT_INFO) {
             ((BaseViewHolder) holder).bindData(jtBean);
         } else if (getItemViewType(position) == JT_DISCUSS) {
-            ((BaseViewHolder) holder).bindData(jtBean.getDiscusses().get(position - 1));
+            ((BaseViewHolder) holder).bindData(jtBean.getDiscussJts().get(position - 1));
         }
 
     }
 
     @Override
     public int getItemCount() {
-        return jtBean.getDiscusses() == null ? 1 : jtBean.getDiscusses().size()+1;
+        return jtBean.getDiscussJts() == null ? 1 : jtBean.getDiscussJts().size() + 1;
     }
 
 

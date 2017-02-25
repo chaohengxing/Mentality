@@ -1,6 +1,6 @@
 package com.agjsj.mentality.network;
 
-import com.agjsj.mentality.bean.MyUser;
+import com.agjsj.mentality.bean.user.MyUser;
 
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.BmobListener;

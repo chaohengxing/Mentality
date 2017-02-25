@@ -1,6 +1,7 @@
 package com.agjsj.mentality.ui.jt;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -81,6 +82,14 @@ public class ShareInfoActivity extends ParentWithNaviActivity {
         });
 
         wvContent.loadUrl(shareUrl);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (wvContent != null)
+            wvContent.destroy();
+        ButterKnife.unbind(this);
     }
 
     // 覆盖onKeydown 添加处理WebView 界面内返回事件处理

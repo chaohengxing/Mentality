@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 
 import com.agjsj.mentality.adapter.base.BaseViewHolder;
 import com.agjsj.mentality.adapter.base.OnRecyclerViewListener;
-import com.agjsj.mentality.bean.jt.JtDiscussReplay;
+import com.agjsj.mentality.bean.jt.ReplayDiscussJt;
 
 import java.util.List;
 
@@ -15,9 +15,9 @@ import java.util.List;
  */
 public class JtReplayAdapter extends RecyclerView.Adapter {
     private Context context;
-    private List<JtDiscussReplay> replays;
+    private List<ReplayDiscussJt> replays;
 
-    public JtReplayAdapter(Context context, List<JtDiscussReplay> replays) {
+    public JtReplayAdapter(Context context, List<ReplayDiscussJt> replays) {
         this.context = context;
         this.replays = replays;
     }

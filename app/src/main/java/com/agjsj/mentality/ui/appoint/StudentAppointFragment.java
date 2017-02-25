@@ -12,10 +12,14 @@ import com.agjsj.mentality.R;
 import com.agjsj.mentality.adapter.appoint.AppointHolder;
 import com.agjsj.mentality.adapter.appoint.AppointStiRecyHeaderAdapter;
 import com.agjsj.mentality.bean.appoint.AppointInfo;
+import com.agjsj.mentality.bean.appoint.FreeTime;
+import com.agjsj.mentality.global.MyConfig;
 import com.agjsj.mentality.network.AppointNetwork;
+import com.agjsj.mentality.network.UserNetwork;
 import com.agjsj.mentality.ui.MainActivity;
 import com.agjsj.mentality.ui.SearchActivity;
 import com.agjsj.mentality.ui.base.ParentWithNaviActivity;
+import com.agjsj.mentality.ui.chat.Config;
 import com.agjsj.mentality.utils.TimeUtil;
 import com.orhanobut.logger.Logger;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
@@ -36,7 +40,6 @@ import butterknife.ButterKnife;
  */
 public class StudentAppointFragment extends AppointFragment {
 
-    private static final String TAG = "StudentAppoint";
     @Bind(R.id.recyc_appoint_stu)
     RecyclerView mRecyclerView;
 
@@ -46,7 +49,6 @@ public class StudentAppointFragment extends AppointFragment {
     private AppointStiRecyHeaderAdapter adapter;
     private StickyRecyclerHeadersDecoration mHeaderDecor;
     private LinearLayoutManager linearLayoutManager;
-    private AppointNetwork appointNetwork = AppointNetwork.getInstance();
     long lastTime = 0;
 
     @Override
@@ -111,13 +113,31 @@ public class StudentAppointFragment extends AppointFragment {
      * 下拉刷新时调用
      */
     private void initDate() {
-        appointNetwork.queryStundetCanAppointTime(new AppointNetwork.QueryStundetCanAppointTimeCallable() {
-            @Override
-            public void postResult(List<AppointInfo> lists) {
-                adapter.clear();
-                adapter.addAll(lists);
-            }
-        });
+        AppointNetwork.getInstance().getFreeTimesWithMyAppoint(UserNetwork.getInstance().getCurrentUser().getId(),
+                MyConfig.getTimeDates(), new AppointNetwork.GetFreeTimesWithMyAppointCallback() {
+                    @Override
+                    public void response(int code, List<FreeTime> freeTimes) {
+                        if (AppointNetwork.GetFreeTimesWithMyAppoint_YES == code) {
+                            //在此做一个排序
+                            List<FreeTime> list = new ArrayList<FreeTime>();
+                            List<String> dates = MyConfig.getTimeDates();
+                            for (int i = 0; i<dates.size(); i++) {
+                                for (int j = 0; j < freeTimes.size(); j++) {
+                                    if (dates.get(i).equals(freeTimes.get(j).getTimeDate())){
+                                        list.add(freeTimes.get(j));
+                                    }
+                                }
+                            }
+
+
+                            adapter.addAll(list);
+                            adapter.notifyDataSetChanged();
+                        } else if (AppointNetwork.GetFreeTimesWithMyAppoint_NO == code) {
+                            toast("获取数据失败!");
+                        }
+                    }
+                }
+        );
 
     }
 

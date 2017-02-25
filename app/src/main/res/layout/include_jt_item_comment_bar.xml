@@ -18,15 +18,16 @@
         android:gravity="center"
         android:text="(0)"
         android:textColor="@color/color_bottom_text_normal"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/tv_comment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="20dp"
-        android:layout_toLeftOf="@id/tv_like"
         android:drawableLeft="@drawable/jt_comment_pressed"
         android:drawablePadding="5dp"
         android:gravity="center"

@@ -139,6 +139,11 @@ public class ChatActivity extends ParentWithNaviActivity implements MessageListH
             }
 
             @Override
+            public void onItemClick(int position, int id) {
+
+            }
+
+            @Override
             public boolean onItemLongClick(int position) {
                 //这里省了个懒，直接长按就删除了该消息
                 c.deleteMessage(adapter.getItem(position));

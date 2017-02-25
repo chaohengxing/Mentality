@@ -134,6 +134,11 @@ public class ChatFragment extends ParentWithNaviFragment {
             }
 
             @Override
+            public void onItemClick(int position, int id) {
+
+            }
+
+            @Override
             public boolean onItemLongClick(int position) {
                 adapter.getItem(position).onLongClick(getActivity());
                 adapter.remove(position);

@@ -3,16 +3,23 @@ package com.agjsj.mentality.ui.jt;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.agjsj.mentality.R;
 import com.agjsj.mentality.adapter.base.OnRecyclerViewListener;
+import com.agjsj.mentality.bean.jt.DiscussJt;
 import com.agjsj.mentality.bean.jt.JtBean;
+import com.agjsj.mentality.bean.user.UserType;
 import com.agjsj.mentality.network.JtNetWork;
+import com.agjsj.mentality.network.UserNetwork;
 import com.agjsj.mentality.ui.base.ParentWithNaviActivity;
+import com.agjsj.mentality.ui.photo.ViewPagerActivity;
 import com.orhanobut.logger.Logger;
+
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -36,9 +43,8 @@ public class SayInfoActivity extends ParentWithNaviActivity implements OnRecycle
     private JtBean jtBean;
     private LinearLayoutManager layoutManager;
     private SayInfoAdapter adapter;
-    private Object data;
 
-    private int id;
+    private String id;
 
     @Override
     protected String title() {
@@ -56,7 +62,7 @@ public class SayInfoActivity extends ParentWithNaviActivity implements OnRecycle
         jtBean = new JtBean();
 
         Bundle bundle = getBundle();
-        id = bundle.getInt("id");
+        id = bundle.getString("id");
 
         initNaviView();
 
@@ -89,6 +95,7 @@ public class SayInfoActivity extends ParentWithNaviActivity implements OnRecycle
         btnSpeak.setVisibility(View.GONE);
         editMsg.setVisibility(View.VISIBLE);
         btnChatSend.setVisibility(View.VISIBLE);
+        editMsg.setHint("请输入评论内容");
     }
 
     /**
@@ -96,12 +103,22 @@ public class SayInfoActivity extends ParentWithNaviActivity implements OnRecycle
      */
     private void getData() {
 
-        jtBean = JtNetWork.getInstance().getJtBeanWithJtDiscussAndReplay(id);
 
-        Logger.e("chx", jtBean.toString());
-        adapter.setJtBean(jtBean);
+        JtNetWork.getInstance().getJtBeanWithJtDiscussAndReplay(id, new JtNetWork.GetJtBeanWithJtDiscussAndReplayCallBack() {
+            @Override
+            public void response(int responseCode, JtBean jt) {
+                if (JtNetWork.GET_JTINFO_WITH_DISCUSS_YES == responseCode) {
+                    jtBean = jt;
+                    adapter.setJtBean(jt);
+                    adapter.notifyDataSetChanged();
+                } else if (JtNetWork.GET_JTINFO_WITH_DISCUSS_NO == responseCode) {
 
-        adapter.notifyDataSetChanged();
+                    toast("获取鸡汤详情失败!");
+                } else {
+                    toast("获取鸡汤详情失败!");
+                }
+            }
+        });
 
 
     }
@@ -111,10 +128,61 @@ public class SayInfoActivity extends ParentWithNaviActivity implements OnRecycle
      */
     @OnClick(R.id.btn_chat_send)
     public void onClick() {
+        if (TextUtils.isEmpty(editMsg.getText())) {
+            toast("请输入评论内容");
+        } else {
+            sendDiscussJt();
+        }
+    }
+
+    private void sendDiscussJt() {
+
+        DiscussJt discussJt = new DiscussJt(id,
+                UserNetwork.getInstance().getCurrentUser().getUserType(),
+                UserNetwork.getInstance().getCurrentUser().getId(),
+                editMsg.getText().toString().trim());
+        JtNetWork.getInstance().sendDiscussJt(discussJt, new JtNetWork.SendDiscussJtCallBack() {
+            @Override
+            public void response(int responseCode) {
+                if (JtNetWork.SEND_DISCUSS_JT_YES == responseCode) {
+                    toast("发送评论成功!");
+                    editMsg.setText("");
+                    hideSoftInputView();
+                    getData();
+                } else if (JtNetWork.SEND_DISCUSS_JT_NO == responseCode) {
+                    toast("发送评论失败");
+                }
+            }
+        });
+
     }
 
     @Override
     public void onItemClick(int position) {
+
+    }
+
+    @Override
+    public void onItemClick(int position, int id) {
+
+        if (R.id.tv_like == id) {
+            toast("点赞");
+        } else if (R.id.tv_comment == id) {
+            editMsg.setFocusable(true);
+            showSoftInputView();
+        } else if (R.id.iv_user_icon == id) {
+            Bundle bundle = new Bundle();
+            ArrayList<String> images = new ArrayList<>();
+            if (UserType.StudentType == jtBean.getUserType()) {
+                images.add(jtBean.getStudentInfo().getStuIcon());
+            } else if (UserType.TeacherType == jtBean.getUserType()) {
+                images.add(jtBean.getTeacherInfo().getTeacherIcon());
+            }
+            bundle.putSerializable("imageUrls", images);
+            bundle.putInt("position", 0);
+            startActivity(ViewPagerActivity.class, bundle);
+
+        }
 
     }
 
@@ -125,6 +193,12 @@ public class SayInfoActivity extends ParentWithNaviActivity implements OnRecycle
 
     @Override
     public void onImageItemClick(int itemPosition, int imagePosition) {
-        toast("显示第" + imagePosition + "张图片的大图");
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("imageUrls", (ArrayList) jtBean.getJtImgUrlList());
+        bundle.putInt("position", imagePosition);
+
+        startActivity(ViewPagerActivity.class, bundle);
+
     }
 }

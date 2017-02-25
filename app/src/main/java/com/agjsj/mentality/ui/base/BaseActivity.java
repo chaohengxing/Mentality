@@ -23,7 +23,9 @@ import org.greenrobot.eventbus.Subscribe;
 import butterknife.ButterKnife;
 
 
-/**基类
+/**
+ * 基类
+ *
  * @author :smile
  * @project:BaseActivity
  * @date :2016-01-15-18:23
@@ -63,11 +65,20 @@ public class BaseActivity extends FragmentActivity {
     }
 
     @Subscribe
-    public void onEvent(Boolean empty){
+    public void onEvent(Boolean empty) {
 
     }
 
-    protected void initView() {}
+    /**
+     * 显示软键盘
+     */
+    public void showSoftInputView() {
+        InputMethodManager imm = (InputMethodManager) BaseActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    protected void initView() {
+    }
 
     protected void runOnMain(Runnable runnable) {
         runOnUiThread(runnable);
@@ -75,6 +86,7 @@ public class BaseActivity extends FragmentActivity {
 
     protected final static String NULL = "";
     private Toast toast;
+
     public void toast(final Object obj) {
         try {
             runOnMain(new Runnable() {
@@ -92,7 +104,7 @@ public class BaseActivity extends FragmentActivity {
         }
     }
 
-    public void startActivity(Class<? extends Activity> target, Bundle bundle,boolean finish) {
+    public void startActivity(Class<? extends Activity> target, Bundle bundle, boolean finish) {
         Intent intent = new Intent();
         intent.setClass(this, target);
         if (bundle != null)
@@ -120,7 +132,9 @@ public class BaseActivity extends FragmentActivity {
         }
     }
 
-    /**隐藏软键盘-一般是EditText.getWindowToken()
+    /**
+     * 隐藏软键盘-一般是EditText.getWindowToken()
+     *
      * @param token
      */
     public void hideSoftInput(IBinder token) {
@@ -130,11 +144,13 @@ public class BaseActivity extends FragmentActivity {
         }
     }
 
-    /**Log日志
+    /**
+     * Log日志
+     *
      * @param msg
      */
-    public void log(String msg){
-        if(Config.DEBUG){
+    public void log(String msg) {
+        if (Config.DEBUG) {
             Logger.i(msg);
         }
     }

@@ -1,9 +1,15 @@
 package com.agjsj.mentality.network;
 
+import com.agjsj.mentality.bean.BaseEntity;
+import com.agjsj.mentality.bean.jt.DiscussJt;
 import com.agjsj.mentality.bean.jt.JtBean;
-import com.agjsj.mentality.bean.jt.JtDiscuss;
-import com.agjsj.mentality.bean.jt.JtDiscussReplay;
+import com.agjsj.mentality.bean.teacher.TeacherInfo;
+import com.agjsj.mentality.bean.user.MyUser;
+import com.agjsj.mentality.utils.HttpUtils;
 import com.agjsj.mentality.utils.PicassoUtils;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.orhanobut.logger.Logger;
 
 import org.w3c.dom.Node;
 
@@ -11,11 +17,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 /**
  * Created by HengXing on 2016/11/6.
  */
 public class JtNetWork {
 
+
+    JtNetworkService jtNetworkService;
 
     private static JtNetWork instance;
 
@@ -27,9 +39,16 @@ public class JtNetWork {
     }
 
     private JtNetWork() {
+        jtNetworkService = HttpUtils.createService(JtNetworkService.class);
     }
 
     //---------------------------------------从网络中加载Jt内容
+    public static final int GET_JTS_YES = 1;//登陆成功返回码
+    public static final int GET_JTS_NO = 0;//登陆失败返回码,有待详细补充
+
+    public interface GetJtBeansCallBack {
+        public void response(int responseCode, List<JtBean> jtBeens);
+    }
 
     /**
      * 分页加载
@@ -40,49 +59,41 @@ public class JtNetWork {
      * jt的基本信息
      * 发布者的UserInfo
      */
-    public List<JtBean> getJtBeans(int pageIndex, int pageSize) {
+    public void getJtBeans(int pageIndex, int pageSize, final GetJtBeansCallBack callBack) {
+        jtNetworkService.getJtBeansService(pageIndex, pageSize)
+                .subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<BaseEntity>() {
+                    @Override
+                    public void onCompleted() {
+                    }
 
-        List<String> images = new ArrayList<>();
-        images.add("http://life.people.com.cn/NMediaFile/2015/0618/MAIN201506181420187740456986383.jpg");
-        images.add("http://img5q.duitang.com/uploads/item/201407/13/20140713142348_VNVBr.jpeg");
-        images.add("http://img3.3lian.com/2013/s4/17/d/43.jpg");
-        images.add("http://life.people.com.cn/NMediaFile/2015/0618/MAIN201506181420187740456986383.jpg");
-        images.add("http://img5q.duitang.com/uploads/item/201407/22/20140722114442_itsSW.jpeg");
+                    @Override
+                    public void onError(Throwable e) {
+                        callBack.response(GET_JTS_NO, null);
+                    }
 
+                    @Override
+                    public void onNext(BaseEntity baseEntity) {
+                        if (200 == baseEntity.getCode()) {
+                            List<JtBean> jtBeens = new Gson().fromJson(baseEntity.getData(), new TypeToken<ArrayList<JtBean>>() {
+                            }.getType());
+                            callBack.response(GET_JTS_YES, jtBeens);
+                        } else {
+                            callBack.response(GET_JTS_NO, null);
+                        }
 
-        List<JtBean> jtbeans = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            JtBean jtbeanItem = new JtBean();
-
-
-            jtbeanItem.setId(i);
-            jtbeanItem.setContent("第" + i + "条说说的内容");
-            jtbeanItem.setCreateDate(new Date().getTime());
-            jtbeanItem.setUserInfo(UserNetwork.getInstance().getCurrentUser());
-            jtbeanItem.setLikes(i);
-            jtbeanItem.setStuId(UserNetwork.getInstance().getCurrentUser().getId());
-            if (i % 3 == 0) {
-                //带图片的说说
-                jtbeanItem.setJtType(0);
-                jtbeanItem.setImages(images);
-                jtbeanItem.setIslikes(true);
-            } else if (i % 3 == 1) {
-                //不带图片的说说
-                jtbeanItem.setJtType(0);
-                jtbeanItem.setIslikes(false);
-            } else if (i % 3 == 2) {
-                //分享
-                jtbeanItem.setJtType(1);
-                jtbeanItem.setPreImage("http://mmbiz.qpic.cn/mmbiz_jpg/JmUxgMAv61RhHpPM13w98WcELPicaOfZYiawYWhphn3TwpYTZcwtMsprX7sPLkVmeLoOeibibJD48bmIstCMRlJKxg/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1");
-                jtbeanItem.setTitle("妈妈给我买了一双耐克的球鞋，学校就取消了我的贫困生助学金");
-                jtbeanItem.setShareUrl("http://mp.weixin.qq.com/s?__biz=MjM5NjY3NjEyMA==&mid=2653016431&idx=1&sn=4df82b39863de15629f24e477367ab11&chksm=bd30e6188a476f0e2647ba49f613b93b397e6ff19cd5228fa92935ae977259787ad66fe591bb&scene=0#wechat_redirect");
-                jtbeanItem.setFrom("微信");
-            }
-            jtbeans.add(jtbeanItem);
-        }
-        return jtbeans;
+                    }
+                });
     }
 
+
+    public static final int GET_JTINFO_WITH_DISCUSS_YES = 1;//登陆成功返回码
+    public static final int GET_JTINFO_WITH_DISCUSS_NO = 0;//登陆失败返回码,有待详细补充
+
+    public interface GetJtBeanWithJtDiscussAndReplayCallBack {
+        public void response(int responseCode, JtBean jtBean);
+    }
 
     /**
      * 获取带有评论以及评论的回复  的  JtBean
@@ -90,57 +101,103 @@ public class JtNetWork {
      * @param jtId
      * @return
      */
-    public JtBean getJtBeanWithJtDiscussAndReplay(int jtId) {
-        JtBean jtbeanItem = new JtBean();
+    public void getJtBeanWithJtDiscussAndReplay(String jtId, final GetJtBeanWithJtDiscussAndReplayCallBack callBack) {
 
-        List<String> images = new ArrayList<>();
-        images.add("http://life.people.com.cn/NMediaFile/2015/0618/MAIN201506181420187740456986383.jpg");
-        images.add("http://img5q.duitang.com/uploads/item/201407/13/20140713142348_VNVBr.jpeg");
-        images.add("http://img3.3lian.com/2013/s4/17/d/43.jpg");
-        images.add("http://life.people.com.cn/NMediaFile/2015/0618/MAIN201506181420187740456986383.jpg");
-        images.add("http://img5q.duitang.com/uploads/item/201407/22/20140722114442_itsSW.jpeg");
+        jtNetworkService.getJtBeanWithJtDiscussAndReplayService(jtId)
+                .subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<BaseEntity>() {
+                    @Override
+                    public void onCompleted() {
+                    }
 
-        jtbeanItem.setId(jtId);
-        jtbeanItem.setContent("第" + jtId + "条说说的内容");
-        jtbeanItem.setCreateDate(new Date().getTime());
-        jtbeanItem.setUserInfo(UserNetwork.getInstance().getCurrentUser());
-        jtbeanItem.setLikes(jtId);
-        jtbeanItem.setStuId(UserNetwork.getInstance().getCurrentUser().getId());
-        jtbeanItem.setJtType(0);
-        jtbeanItem.setImages(images);
-        jtbeanItem.setIslikes(true);
+                    @Override
+                    public void onError(Throwable e) {
+                        callBack.response(GET_JTINFO_WITH_DISCUSS_NO, null);
+                    }
 
-        List<JtDiscuss> jtDiscusses = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            JtDiscuss jtDiscussItem = new JtDiscuss();
-            jtDiscussItem.setId(i);
-            jtDiscussItem.setCommentInfo("评论内容");
-            jtDiscussItem.setCommentUserInfo(UserNetwork.getInstance().getCurrentUser());
-            jtDiscussItem.setCommmentTime(new Date().getTime());
-            jtDiscussItem.setCommentUserId(UserNetwork.getInstance().getCurrentUser().getId());
-            jtDiscussItem.setJtId(jtId);
-            List<JtDiscussReplay> replays = new ArrayList<>();
-            for (int j = 0; j < 5; j++) {
-                JtDiscussReplay replayItem = new JtDiscussReplay();
-                replayItem.setId(j);
-                replayItem.setDiscussId(i);
-                replayItem.setReplayInfo("回复内容");
-                replayItem.setPassiverUser(UserNetwork.getInstance().getCurrentUser());
-                replayItem.setPassiveStuId(UserNetwork.getInstance().getCurrentUser().getId());
-                replayItem.setReplayUser(UserNetwork.getInstance().getCurrentUser());
-                replayItem.setReplayStuId(UserNetwork.getInstance().getCurrentUser().getId());
-                replayItem.setReplayTime(new Date().getTime());
-                replays.add(replayItem);
-            }
-            jtDiscussItem.setReplays(replays);
+                    @Override
+                    public void onNext(BaseEntity baseEntity) {
+                        Logger.e("chx", baseEntity.toString());
+                        if (200 == baseEntity.getCode()) {
+                            JtBean jtBean = new Gson().fromJson(baseEntity.getData(), JtBean.class);
+                            Logger.e("chx", jtBean.toString());
+                            Logger.e("chx", "评论数：" + jtBean.getDiscussJts().size());
+                            callBack.response(GET_JTINFO_WITH_DISCUSS_YES, jtBean);
+                        } else {
+                            callBack.response(GET_JTINFO_WITH_DISCUSS_NO, null);
+                        }
+
+                    }
+                });
+
+    }
+
+    //---------------------发布鸡汤---------------
+    public static final int SEND_JTBEAN_YES = 1;//登陆成功返回码
+    public static final int SEND_JTBEAN_NO = 0;//登陆失败返回码,有待详细补充
+
+    public interface SendJtBeanReplayCallBack {
+        public void response(int responseCode);
+    }
+
+    public void sendJtBean(JtBean jtBean, final SendJtBeanReplayCallBack callBack) {
+
+        jtNetworkService.sendJtBeanService(new Gson().toJson(jtBean))
+                .subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<BaseEntity>() {
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        callBack.response(SEND_JTBEAN_NO);
+                    }
+
+                    @Override
+                    public void onNext(BaseEntity baseEntity) {
+                        callBack.response(SEND_JTBEAN_YES);
+                    }
+                });
+    }
+
+    //---------------------发布鸡汤评论---------------
+    public static final int SEND_DISCUSS_JT_YES = 1;//登陆成功返回码
+    public static final int SEND_DISCUSS_JT_NO = 0;//登陆失败返回码,有待详细补充
+
+    public interface SendDiscussJtCallBack {
+        public void response(int responseCode);
+    }
+
+    public void sendDiscussJt(DiscussJt discussJt, final SendDiscussJtCallBack callBack) {
+
+        jtNetworkService.sendDiscussJtService(new Gson().toJson(discussJt))
+                .subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<BaseEntity>() {
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        callBack.response(SEND_DISCUSS_JT_NO);
+                    }
+
+                    @Override
+                    public void onNext(BaseEntity baseEntity) {
+
+                        callBack.response(SEND_DISCUSS_JT_YES);
+                    }
+                });
 
 
-            jtDiscusses.add(jtDiscussItem);
-        }
-
-        jtbeanItem.setDiscusses(jtDiscusses);
-
-        return jtbeanItem;
     }
 
 

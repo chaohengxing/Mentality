@@ -12,6 +12,7 @@ import com.agjsj.mentality.R;
 import com.agjsj.mentality.adapter.base.BaseViewHolder;
 import com.agjsj.mentality.adapter.base.OnRecyclerViewListener;
 import com.agjsj.mentality.bean.jt.JtBean;
+import com.agjsj.mentality.bean.user.UserType;
 import com.agjsj.mentality.myview.CircleImageView;
 import com.agjsj.mentality.utils.PicassoUtils;
 import com.agjsj.mentality.utils.TimeUtil;
@@ -53,17 +54,29 @@ public class ShareViewHolder extends BaseViewHolder {
     public void bindData(Object o) {
 
         JtBean jtBean = (JtBean) o;
-        PicassoUtils.loadResizeImage(jtBean.getUserInfo().getUserIcon(), R.drawable.logo, R.drawable.logo, 100, 100, ivUserIcon);
+        if (UserType.StudentType == jtBean.getUserType()) {
+            PicassoUtils.loadResizeImage(jtBean.getStudentInfo().getStuIcon(), R.drawable.logo, R.drawable.logo, 100, 100, ivUserIcon);
+            tvNickname.setText(jtBean.getStudentInfo().getStuNickName());
+        } else if (UserType.TeacherType == jtBean.getUserType()) {
+            PicassoUtils.loadResizeImage(jtBean.getTeacherInfo().getTeacherIcon(), R.drawable.logo, R.drawable.logo, 100, 100, ivUserIcon);
+            tvNickname.setText(jtBean.getTeacherInfo().getTeacherNickName());
 
-        tvNickname.setText(TextUtils.isEmpty(jtBean.getUserInfo().getNickName()) ? jtBean.getUserInfo().getUserName() : jtBean.getUserInfo().getNickName());
-        tvTime.setText(TimeUtil.getChatTime(false, jtBean.getCreateDate()));
-        tvContent.setText(jtBean.getContent());
-        tvLike.setText("(" + jtBean.getLikes() + ")");
+        }
+//
+        tvTime.setText(TimeUtil.getChatTime(false, Long.parseLong(jtBean.getJtTime())));
+        tvContent.setText(jtBean.getJtInfo());
+//        tvLike.setText("(" + jtBean.getLikes() + ")");
 
-        PicassoUtils.loadResizeImage(jtBean.getPreImage(), R.drawable.logo, R.drawable.logo, 300, 300, ivPreview);
+        if (TextUtils.isEmpty(jtBean.getPreImage())) {
+            ivPreview.setVisibility(View.GONE);
+        } else {
+            ivPreview.setVisibility(View.VISIBLE);
+            PicassoUtils.loadResizeImage(jtBean.getPreImage(), R.drawable.logo, R.drawable.logo, 300, 300, ivPreview);
 
-        tvTitle.setText(TextUtils.isEmpty(jtBean.getTitle()) ? "" : jtBean.getTitle());
-        tvFrom.setText("来自" + (TextUtils.isEmpty(jtBean.getFrom()) ? "第三方" : jtBean.getFrom()));
+        }
+
+        tvTitle.setText(TextUtils.isEmpty(jtBean.getShareTitle()) ? "" : jtBean.getShareTitle());
+        tvFrom.setText("来自" + (TextUtils.isEmpty(jtBean.getShareFrom()) ? "第三方" : jtBean.getShareFrom()));
 
         tvComment.setVisibility(View.GONE);
 

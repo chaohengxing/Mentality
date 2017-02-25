@@ -85,13 +85,22 @@ public class PicassoUtils {
      * 加载本地资源
      *
      * @param path
-
      * @param resizeWidth
      * @param resizeHeight
      * @param imageView
      */
     public static void loadResourceImage(int path, int resizeWidth, int resizeHeight, ImageView imageView) {
         picasso.load(path).resize(resizeWidth, resizeHeight).into(imageView);
+    }
+
+    /**
+     * 加载本地资源
+     *
+     * @param path
+     * @param imageView
+     */
+    public static void loadResourceImage(int path, ImageView imageView) {
+        picasso.load(path).into(imageView);
     }
 
 

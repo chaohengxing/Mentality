@@ -18,8 +18,8 @@ import java.util.List;
 public class JtFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
-    public static final int TYPE_SAY = 0;
-    public static final int TYPE_SHARE = 1;
+    public static final int TYPE_SAY = 1;
+    public static final int TYPE_SHARE = 2;
 
 
     private Context context;

@@ -1,40 +1,124 @@
 package com.agjsj.mentality.bean.appoint;
 
-import java.io.Serializable;
+import com.agjsj.mentality.bean.teacher.TeacherInfo;
+
 import java.util.List;
-import java.util.Map;
 
-/**
- * Created by MyPC on 2016/11/5.
- */
+public class FreeTime {
 
-public class FreeTime implements Serializable {
+	private String id;
+	private String teacherId;
+	private String timeDate;
+	private String timeId;
 
-    private String date;
-    //时间段状态
-    private List<TimeStatus> timeStatus;
+	private TimeTemplate timeTemplate;
 
-    public String getDate() {
-        return date;
-    }
+	private TeacherInfo teacherInfo;
 
-    public void setDate(String date) {
-        this.date = date;
-    }
+	private List<Appoint> appoints;
 
-    public List<TimeStatus> getTimeStatus() {
-        return timeStatus;
-    }
+	/**
+	 * @return the appoint
+	 */
+	public List<Appoint> getAppoint() {
+		return appoints;
+	}
 
-    public void setTimeStatus(List<TimeStatus> timeStatus) {
-        this.timeStatus = timeStatus;
-    }
+	/**
+	 *            the appoint to set
+	 */
+	public void setAppoint(List<Appoint> appoints) {
+		this.appoints = appoints;
+	}
 
-    @Override
-    public String toString() {
-        return "FreeTime{" +
-                "date='" + date + '\'' +
-                ", timeStatus=" + timeStatus +
-                '}';
-    }
+	/**
+	 * @return the timeTemplate
+	 */
+	public TimeTemplate getTimeTemplate() {
+		return timeTemplate;
+	}
+
+	/**
+	 * @param timeTemplate
+	 *            the timeTemplate to set
+	 */
+	public void setTimeTemplate(TimeTemplate timeTemplate) {
+		this.timeTemplate = timeTemplate;
+	}
+
+	/**
+	 * @return the teacherInfo
+	 */
+	public TeacherInfo getTeacherInfo() {
+		return teacherInfo;
+	}
+
+	/**
+	 * @param teacherInfo
+	 *            the teacherInfo to set
+	 */
+	public void setTeacherInfo(TeacherInfo teacherInfo) {
+		this.teacherInfo = teacherInfo;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * @param id
+	 *            the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	/**
+	 * @return the teacherId
+	 */
+	public String getTeacherId() {
+		return teacherId;
+	}
+
+	/**
+	 * @param teacherId
+	 *            the teacherId to set
+	 */
+	public void setTeacherId(String teacherId) {
+		this.teacherId = teacherId;
+	}
+
+	/**
+	 * @return the timeDate
+	 */
+	public String getTimeDate() {
+		return timeDate;
+	}
+
+	/**
+	 * @param timeDate
+	 *            the timeDate to set
+	 */
+	public void setTimeDate(String timeDate) {
+		this.timeDate = timeDate;
+	}
+
+	/**
+	 * @return the timeId
+	 */
+	public String getTimeId() {
+		return timeId;
+	}
+
+	/**
+	 * @param timeId
+	 *            the timeId to set
+	 */
+	public void setTimeId(String timeId) {
+		this.timeId = timeId;
+	}
+
 }

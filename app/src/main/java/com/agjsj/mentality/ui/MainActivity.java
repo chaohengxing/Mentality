@@ -4,16 +4,19 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.agjsj.mentality.R;
-import com.agjsj.mentality.bean.MyUser;
-import com.agjsj.mentality.bean.UserType;
+import com.agjsj.mentality.bean.user.MyUser;
+import com.agjsj.mentality.bean.user.UserType;
+import com.agjsj.mentality.myview.CircleImageView;
 import com.agjsj.mentality.network.UserNetwork;
 import com.agjsj.mentality.ui.appoint.AppointFragment;
 import com.agjsj.mentality.ui.appoint.StudentAppointFragment;
@@ -22,15 +25,20 @@ import com.agjsj.mentality.ui.base.BaseActivity;
 import com.agjsj.mentality.ui.chat.event.RefreshEvent;
 import com.agjsj.mentality.ui.chat.fragment.ChatFragment;
 import com.agjsj.mentality.ui.jt.JtFragment;
+import com.agjsj.mentality.ui.photo.ViewPagerActivity;
 import com.agjsj.mentality.ui.teachers.TeachersFragment;
+import com.agjsj.mentality.ui.user.LoginActivity;
 import com.agjsj.mentality.utils.IMMLeaks;
+import com.agjsj.mentality.utils.PicassoUtils;
 import com.orhanobut.logger.Logger;
-
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.bmob.newim.BmobIM;
 import cn.bmob.newim.core.ConnectionStatus;
 import cn.bmob.newim.listener.ConnectListener;
@@ -56,6 +64,23 @@ public class MainActivity extends BaseActivity {
     RelativeLayout mainContent;
     @Bind(R.id.main_drawerlayout)
     DrawerLayout mainDrawerlayout;
+    //侧滑菜单的一些控件
+    @Bind(R.id.iv_user_icon)
+    CircleImageView ivUserIcon;
+    @Bind(R.id.tv_user_name)
+    TextView tvUserName;
+    @Bind(R.id.tv_user_sex)
+    TextView tvUserSex;
+    @Bind(R.id.ll_my_send)
+    LinearLayout llMySend;
+    @Bind(R.id.ll_my_appoint)
+    LinearLayout llMyAppoint;
+    @Bind(R.id.ll_my_info)
+    LinearLayout llMyInfo;
+    @Bind(R.id.ll_logout)
+    LinearLayout llLogout;
+    @Bind(R.id.ll_menu)
+    LinearLayout llMenu;
 
 
     private Button[] mTabs;
@@ -67,16 +92,20 @@ public class MainActivity extends BaseActivity {
     private int index;
     private int currentTabIndex;
 
+    private MyUser currentUserInfo;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
         initIm();
 
 
     }
+
 
     /**
      * 初始化即时通信工具
@@ -86,11 +115,10 @@ public class MainActivity extends BaseActivity {
 
         MyUser user = UserNetwork.getInstance().getCurrentUser();
 
-        BmobIM.connect(String.valueOf(user.getId()), new ConnectListener() {
+        BmobIM.connect(user.getId(), new ConnectListener() {
             @Override
             public void done(String uid, BmobException e) {
                 if (e == null) {
-                    Logger.i("connect success");
                     //服务器连接成功就发送一个更新事件，同步更新会话及主页的小红点
                     EventBus.getDefault().post(new RefreshEvent());
                 } else {
@@ -128,10 +156,9 @@ public class MainActivity extends BaseActivity {
         teachersFragment = new TeachersFragment();
         chatFragment = new ChatFragment();
 
-        int userType = 2;
-        if (userType == UserType.StudentType) {
+        if ( UserType.StudentType==UserNetwork.getInstance().getCurrentUser().getUserType()) {
             appointFragment = new StudentAppointFragment();
-        } else if (userType == UserType.TeacherType) {
+        } else if (UserType.TeacherType==UserNetwork.getInstance().getCurrentUser().getUserType()) {
             appointFragment = new TeacherAppointFragment();
         }
 
@@ -189,5 +216,53 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        currentUserInfo = UserNetwork.getInstance().getCurrentUser();
+        updateMenu();
+    }
 
+    /**
+     * 更新菜单里的用户信息
+     */
+    private void updateMenu() {
+
+        PicassoUtils.loadResizeImage(currentUserInfo.getUserIcon(), R.drawable.logo, R.drawable.logo, 100, 100, ivUserIcon);
+        tvUserName.setText(TextUtils.isEmpty(currentUserInfo.getNickName()) ? currentUserInfo.getAccount() : currentUserInfo.getNickName());
+
+    }
+
+    @OnClick({R.id.iv_user_icon, R.id.ll_my_send, R.id.ll_my_appoint, R.id.ll_my_info, R.id.ll_logout, R.id.ll_menu})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.iv_user_icon:
+
+                Bundle bundle = new Bundle();
+                ArrayList<String> images = new ArrayList<>();
+                images.add(UserNetwork.getInstance().getCurrentUser().getUserIcon());
+                bundle.putSerializable("imageUrls", images);
+                bundle.putInt("position", 0);
+
+                startActivity(ViewPagerActivity.class, bundle, false);
+
+                break;
+            case R.id.ll_my_send:
+                toast("进入我的发布页面");
+                break;
+            case R.id.ll_my_appoint:
+                toast("进入我的预约页面");
+                break;
+            case R.id.ll_my_info:
+                toast("进入我的资料页面");
+                break;
+            case R.id.ll_logout:
+                UserNetwork.getInstance().deleteCurrentUser();
+                startActivity(LoginActivity.class, null, true);
+                break;
+            case R.id.ll_menu:
+                //不作处理，防止点击事件传到下面的页面
+                break;
+        }
+    }
 }

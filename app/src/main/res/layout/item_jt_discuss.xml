@@ -31,7 +31,6 @@
         android:layout_alignLeft="@id/tv_nickname"
         android:layout_below="@id/tv_nickname"
         android:layout_toRightOf="@id/iv_user_icon"
-        android:text="2016-11-11"
         android:textColor="@color/color_bottom_text_normal"
         android:textSize="11sp" />
 

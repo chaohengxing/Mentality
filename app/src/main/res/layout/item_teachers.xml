@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="250dp"
+    android:background="@android:color/white">
+
+    <com.agjsj.mentality.myview.CircleImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/logo" />
+
+    <TextView
+        android:id="@+id/tv_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_icon"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:text="教师昵称"
+        android:textColor="@android:color/black"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/tv_intro"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_nickname"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:maxLines="2"
+        android:text="老师的简介搭建顺丰快递拉伸件疯狂拉萨缴费卡拉斯减肥卡拉斯减肥卡拉斯的减肥快乐的撒娇发"
+        android:textSize="15sp" />
+
+
+    <TextView
+        android:id="@+id/tv_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/tv_intro"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:drawableLeft="@drawable/jt_comment_pressed"
+        android:drawablePadding="5dp"
+        android:gravity="center"
+        android:text="评论"
+        android:textColor="@color/color_bottom_text_normal"
+        android:textSize="12sp" />
+
+
+    <TextView
+        android:id="@+id/tv_like"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:drawableLeft="@drawable/jt_like"
+        android:drawablePadding="5dp"
+        android:gravity="center"
+        android:text="(0)"
+        android:textColor="@color/color_bottom_text_normal"
+        android:textSize="12sp"
+        android:visibility="gone"
+        />
+
+    <TextView
+        android:id="@+id/tv_chat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@id/tv_intro"
+        android:layout_marginBottom="10dp"
+        android:drawableLeft="@drawable/start_chat_icon"
+        android:drawablePadding="5dp"
+        android:gravity="center"
+        android:text="咨询"
+        android:textColor="@color/color_bottom_text_normal"
+        android:textSize="12sp" />
+
+    <ImageView
+        style="@style/item_divder"
+        android:layout_alignParentBottom="true" />
+</RelativeLayout>
