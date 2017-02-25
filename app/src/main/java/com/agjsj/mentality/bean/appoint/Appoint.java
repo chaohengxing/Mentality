@@ -18,6 +18,15 @@ public class Appoint {
 		this.freeTime = freeTime;
 	}
 
+	public Appoint() {
+	}
+
+	public Appoint(String stuId, String teacherId, String freeTimeId) {
+		this.stuId = stuId;
+		this.teacherId = teacherId;
+		this.freeTimeId = freeTimeId;
+	}
+
 	/**
 	 * @return the id
 	 */

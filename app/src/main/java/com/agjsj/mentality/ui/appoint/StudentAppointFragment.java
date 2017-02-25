@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.agjsj.mentality.R;
 import com.agjsj.mentality.adapter.appoint.AppointHolder;
 import com.agjsj.mentality.adapter.appoint.AppointStiRecyHeaderAdapter;
+import com.agjsj.mentality.bean.appoint.Appoint;
 import com.agjsj.mentality.bean.appoint.AppointInfo;
 import com.agjsj.mentality.bean.appoint.FreeTime;
 import com.agjsj.mentality.global.MyConfig;
@@ -38,7 +39,7 @@ import butterknife.ButterKnife;
 /**
  * Created by HengXing on 2016/10/29.
  */
-public class StudentAppointFragment extends AppointFragment {
+public class StudentAppointFragment extends AppointFragment implements AppointStiRecyHeaderAdapter.SendAppointListener {
 
     @Bind(R.id.recyc_appoint_stu)
     RecyclerView mRecyclerView;
@@ -99,6 +100,7 @@ public class StudentAppointFragment extends AppointFragment {
 
     private void initView() {
         adapter = new AppointStiRecyHeaderAdapter(getContext());
+        adapter.setSendAppointListener(this);
         initDate();
         mRecyclerView.setAdapter(adapter);
 
@@ -194,4 +196,12 @@ public class StudentAppointFragment extends AppointFragment {
     }
 
 
+    /**
+     * 发布预约
+     * @param position
+     */
+    @Override
+    public void sendAppoint(int position) {
+        Appoint appoint = new Appoint();
+    }
 }
