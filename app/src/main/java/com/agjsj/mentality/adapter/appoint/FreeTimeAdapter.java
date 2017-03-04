@@ -6,8 +6,12 @@ import android.view.ViewGroup;
 
 import com.agjsj.mentality.R;
 import com.agjsj.mentality.bean.appoint.FreeTime;
+import com.agjsj.mentality.bean.appoint.TeacherTimePlan;
+import com.agjsj.mentality.bean.appoint.TimeTemplate;
+import com.agjsj.mentality.global.MyConfig;
 import com.orhanobut.logger.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,26 +21,52 @@ import java.util.List;
 public class FreeTimeAdapter extends RecyclerView.Adapter<FreeTimeHolder> {
 
     private Context context;
-    List<FreeTime> freeTimeList;
 
-    public FreeTimeAdapter(Context context, List<FreeTime> freeTimeList) {
+    private List<String> timedates;
+
+    private TeacherTimePlan teacherTimePlan;
+
+    public List<String> getTimedates() {
+        return timedates;
+    }
+
+    private FreeTimeHolder.OnTeacherPlanFreeTimeListener onTeacherPlanFreeTimeListener;
+
+    public void setOnTeacherPlanFreeTimeListener(FreeTimeHolder.OnTeacherPlanFreeTimeListener onTeacherPlanFreeTimeListener) {
+        this.onTeacherPlanFreeTimeListener = onTeacherPlanFreeTimeListener;
+    }
+
+    public FreeTimeAdapter(Context context) {
         this.context = context;
-        this.freeTimeList = freeTimeList;
+        timedates = MyConfig.getTimeDates();
+        this.teacherTimePlan = new TeacherTimePlan(new ArrayList<TimeTemplate>(), new ArrayList<FreeTime>());
+
+    }
+
+    public TeacherTimePlan getTeacherTimePlan() {
+        return teacherTimePlan;
+
+    }
+
+    public void setTeacherTimePlan(TeacherTimePlan teacherTimePlan) {
+        this.teacherTimePlan = teacherTimePlan;
     }
 
     @Override
     public FreeTimeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new FreeTimeHolder(context, parent, R.layout.item_appoint_teacher);
+        return new FreeTimeHolder(context, parent, R.layout.item_appoint_teacher, teacherTimePlan,onTeacherPlanFreeTimeListener);
     }
 
     @Override
     public void onBindViewHolder(FreeTimeHolder holder, int position) {
-        Logger.i("BindDate at Adapter", freeTimeList.get(position).toString());
-        holder.bindData(freeTimeList.get(position));
+        holder.bindData(timedates.get(position));
     }
+
+
+
 
     @Override
     public int getItemCount() {
-        return freeTimeList.size();
+        return timedates.size();
     }
 }

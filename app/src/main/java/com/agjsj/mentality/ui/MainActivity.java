@@ -25,7 +25,12 @@ import com.agjsj.mentality.ui.base.BaseActivity;
 import com.agjsj.mentality.ui.chat.event.RefreshEvent;
 import com.agjsj.mentality.ui.chat.fragment.ChatFragment;
 import com.agjsj.mentality.ui.jt.JtFragment;
+import com.agjsj.mentality.ui.menu.MyAppointActivity;
+import com.agjsj.mentality.ui.menu.MyJtActivity;
+import com.agjsj.mentality.ui.menu.StudentInfoActivity;
+import com.agjsj.mentality.ui.menu.TeacherDatumActivity;
 import com.agjsj.mentality.ui.photo.ViewPagerActivity;
+import com.agjsj.mentality.ui.teachers.TeacherInfoActivity;
 import com.agjsj.mentality.ui.teachers.TeachersFragment;
 import com.agjsj.mentality.ui.user.LoginActivity;
 import com.agjsj.mentality.utils.IMMLeaks;
@@ -130,7 +135,6 @@ public class MainActivity extends BaseActivity {
         BmobIM.getInstance().setOnConnectStatusChangeListener(new ConnectStatusChangeListener() {
             @Override
             public void onChange(ConnectionStatus status) {
-                toast("" + status.getMsg());
             }
         });
         //解决leancanary提示InputMethodManager内存泄露的问题
@@ -156,9 +160,9 @@ public class MainActivity extends BaseActivity {
         teachersFragment = new TeachersFragment();
         chatFragment = new ChatFragment();
 
-        if ( UserType.StudentType==UserNetwork.getInstance().getCurrentUser().getUserType()) {
+        if (UserType.StudentType == UserNetwork.getInstance().getCurrentUser().getUserType()) {
             appointFragment = new StudentAppointFragment();
-        } else if (UserType.TeacherType==UserNetwork.getInstance().getCurrentUser().getUserType()) {
+        } else if (UserType.TeacherType == UserNetwork.getInstance().getCurrentUser().getUserType()) {
             appointFragment = new TeacherAppointFragment();
         }
 
@@ -228,9 +232,14 @@ public class MainActivity extends BaseActivity {
      */
     private void updateMenu() {
 
-        PicassoUtils.loadResizeImage(currentUserInfo.getUserIcon(), R.drawable.logo, R.drawable.logo, 100, 100, ivUserIcon);
-        tvUserName.setText(TextUtils.isEmpty(currentUserInfo.getNickName()) ? currentUserInfo.getAccount() : currentUserInfo.getNickName());
+        if (TextUtils.isEmpty(currentUserInfo.getUserIcon())) {
+            ivUserIcon.setImageResource(R.drawable.default_pic);
+        } else {
+            PicassoUtils.loadResizeImage(currentUserInfo.getUserIcon(), R.drawable.default_pic, R.drawable.default_pic, 100, 100, ivUserIcon);
 
+        }
+        tvUserName.setText(TextUtils.isEmpty(currentUserInfo.getNickName()) ? currentUserInfo.getAccount() : currentUserInfo.getNickName());
+        tvUserSex.setText(TextUtils.isEmpty(currentUserInfo.getSex()) ? "" : currentUserInfo.getSex());
     }
 
     @OnClick({R.id.iv_user_icon, R.id.ll_my_send, R.id.ll_my_appoint, R.id.ll_my_info, R.id.ll_logout, R.id.ll_menu})
@@ -248,13 +257,31 @@ public class MainActivity extends BaseActivity {
 
                 break;
             case R.id.ll_my_send:
-                toast("进入我的发布页面");
+                startActivity(MyJtActivity.class, null, false);
+
                 break;
             case R.id.ll_my_appoint:
-                toast("进入我的预约页面");
+                if (UserType.StudentType == UserNetwork.getInstance().getCurrentUser().getUserType()) {
+                    //进入学生用户的资料
+                    startActivity(MyAppointActivity.class, null, false);
+                } else if (UserType.TeacherType == UserNetwork.getInstance().getCurrentUser().getUserType()) {
+                    toast("该功能只为学生用户开放!");
+                }
+                //
+
                 break;
             case R.id.ll_my_info:
-                toast("进入我的资料页面");
+
+                if (UserType.StudentType == UserNetwork.getInstance().getCurrentUser().getUserType()) {
+                    //进入学生用户的资料
+                    startActivity(StudentInfoActivity.class, null, false);
+                } else if (UserType.TeacherType == UserNetwork.getInstance().getCurrentUser().getUserType()) {
+                    //进入教室用户的资料
+                    startActivity(TeacherDatumActivity.class, null, false);
+
+                }
+
+
                 break;
             case R.id.ll_logout:
                 UserNetwork.getInstance().deleteCurrentUser();

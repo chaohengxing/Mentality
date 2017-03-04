@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:text="一句话介绍该应用"
+            android:text="塑造阳光心态，体验美丽人生"
             android:textColor="@android:color/white"
             android:textSize="20sp" />
     </LinearLayout>

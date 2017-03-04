@@ -60,7 +60,7 @@ public class ChatFragment extends ParentWithNaviFragment {
 
     @Override
     public Object right() {
-        return R.drawable.search_icon;
+        return null;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class ChatFragment extends ParentWithNaviFragment {
 
             @Override
             public void clickRight() {
-                startActivity(SearchActivity.class, null);
+
             }
         };
     }

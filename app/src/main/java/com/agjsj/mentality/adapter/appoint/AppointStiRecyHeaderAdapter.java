@@ -46,6 +46,17 @@ public class AppointStiRecyHeaderAdapter extends BaseAppointAdapter<AppointHolde
         this.context = context;
     }
 
+    private OnItemClickListener onItemClickListener;
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
+    public interface OnItemClickListener{
+        public void  onItemClick(int position);
+    }
+
+
     private SendAppointListener sendAppointListener;
 
     public void setSendAppointListener(SendAppointListener sendAppointListener) {
@@ -79,6 +90,12 @@ public class AppointStiRecyHeaderAdapter extends BaseAppointAdapter<AppointHolde
             } else {
                 PicassoUtils.loadImage(getItem(position).getTeacherInfo().getTeacherIcon(), R.drawable.logo, R.drawable.logo, holder.iv_icon);
             }
+            holder.rl_item.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemClickListener.onItemClick(position);
+                }
+            });
         }
         //左右滑动监听时间
         holder.swipeMenuLayout.setSwipeListener(new SwipeSwitchListener() {

@@ -55,10 +55,10 @@ public class ShareViewHolder extends BaseViewHolder {
 
         JtBean jtBean = (JtBean) o;
         if (UserType.StudentType == jtBean.getUserType()) {
-            PicassoUtils.loadResizeImage(jtBean.getStudentInfo().getStuIcon(), R.drawable.logo, R.drawable.logo, 100, 100, ivUserIcon);
+            PicassoUtils.loadResizeImage(jtBean.getStudentInfo().getStuIcon(), R.drawable.default_pic, R.drawable.default_pic, 100, 100, ivUserIcon);
             tvNickname.setText(jtBean.getStudentInfo().getStuNickName());
         } else if (UserType.TeacherType == jtBean.getUserType()) {
-            PicassoUtils.loadResizeImage(jtBean.getTeacherInfo().getTeacherIcon(), R.drawable.logo, R.drawable.logo, 100, 100, ivUserIcon);
+            PicassoUtils.loadResizeImage(jtBean.getTeacherInfo().getTeacherIcon(), R.drawable.default_pic, R.drawable.default_pic, 100, 100, ivUserIcon);
             tvNickname.setText(jtBean.getTeacherInfo().getTeacherNickName());
 
         }
@@ -71,7 +71,7 @@ public class ShareViewHolder extends BaseViewHolder {
             ivPreview.setVisibility(View.GONE);
         } else {
             ivPreview.setVisibility(View.VISIBLE);
-            PicassoUtils.loadResizeImage(jtBean.getPreImage(), R.drawable.logo, R.drawable.logo, 300, 300, ivPreview);
+            PicassoUtils.loadResizeImage(jtBean.getPreImage(), R.drawable.default_pic, R.drawable.logo, 300, 300, ivPreview);
 
         }
 

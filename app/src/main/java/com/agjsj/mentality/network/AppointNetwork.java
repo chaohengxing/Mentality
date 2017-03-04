@@ -4,7 +4,9 @@ import com.agjsj.mentality.bean.BaseEntity;
 import com.agjsj.mentality.bean.appoint.Appoint;
 import com.agjsj.mentality.bean.appoint.AppointInfo;
 import com.agjsj.mentality.bean.appoint.FreeTime;
+import com.agjsj.mentality.bean.appoint.TeacherTimePlan;
 import com.agjsj.mentality.bean.appoint.TimeStatus;
+import com.agjsj.mentality.bean.appoint.TimeTemplate;
 import com.agjsj.mentality.bean.teacher.TeacherInfo;
 import com.agjsj.mentality.utils.HttpUtils;
 import com.agjsj.mentality.utils.TimeUtil;
@@ -14,6 +16,7 @@ import com.orhanobut.logger.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -40,38 +43,96 @@ public class AppointNetwork {
         appointNetworkService = HttpUtils.createService(AppointNetworkService.class);
     }
 
-
     /**
      * 查询教师空闲时间状态接口回调函数
      */
-    public interface QueryTeaFreeTimeCallable {
-        public void postResult(List<FreeTime> lists);
+    public static final int TEACHER_GETFREETIMES_YES = 1;//登陆成功返回码
+    public static final int TEACHER_GETFREETIMES_NO = 0;//登陆失败返回码,有待详细补充
+
+    public interface TeacherGetFreeTimesCallBack {
+        public void response(int code, TeacherTimePlan teacherTimePlan);
     }
 
     /**
-     * 用于教师查看自己的可发布空闲时间
-     *
-     * @param timeVersion
-     * @param callable
+     * 教师获取可排挡的时间列表，以及那些已经排挡过
      */
-    public void queryTeacherFreeTime(String timeVersion, QueryTeaFreeTimeCallable callable) {
-        List<FreeTime> lists = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            FreeTime time = new FreeTime();
-            //  time.setDate(getDateTime(i));
-            List<TimeStatus> timeStatus = new ArrayList<>();
-            for (int j = 0; j < 6; j++) {
-                TimeStatus status = new TimeStatus();
-                status.setId(j);
-                status.setStatus(getRadomBool());
-                timeStatus.add(status);
-            }
-//            time.setTimeStatus(timeStatus);
-            lists.add(time);
-        }
+    public void teacherGetFreeTimes(String teacherId, List<String> timeDates, final TeacherGetFreeTimesCallBack callBack) {
+        appointNetworkService.teacherGetFreeTimesService(teacherId, new Gson().toJson(timeDates))
+                .subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<BaseEntity>() {
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        callBack.response(TEACHER_GETFREETIMES_NO, null);
+
+                    }
+
+                    @Override
+                    public void onNext(BaseEntity baseEntity) {
+
+                        try {
+                            JSONObject jsonObject = new JSONObject(baseEntity.getData());
+                            List<TimeTemplate> timeTemplates = new Gson().fromJson(jsonObject.getString("templates"), new TypeToken<ArrayList<TimeTemplate>>() {
+                            }.getType());
+                            List<FreeTime> freeTimes = new Gson().fromJson(jsonObject.getString("freeTimes"), new TypeToken<ArrayList<FreeTime>>() {
+                            }.getType());
+
+                            TeacherTimePlan teacherTimePlan = new TeacherTimePlan(timeTemplates, freeTimes);
+
+                            callBack.response(TEACHER_GETFREETIMES_YES, teacherTimePlan);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
 
-        callable.postResult(lists);
+                    }
+                });
+    }
+
+    /**
+     * 教师排挡 及 发布空闲时间
+     */
+    public static final int PLAN_FREETIME_YES = 1;//登陆成功返回码
+    public static final int PLAN_FREETIME_NO = 0;//登陆失败返回码,有待详细补充
+
+    public interface PlanFreeTimeCallBack {
+        public void response(int code);
+    }
+
+    public void planFreeTime(FreeTime freeTime, final PlanFreeTimeCallBack callBack) {
+        appointNetworkService.planFreeTime(new Gson().toJson(freeTime))
+                .subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<BaseEntity>() {
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        callBack.response(PLAN_FREETIME_NO);
+                    }
+
+                    @Override
+                    public void onNext(BaseEntity baseEntity) {
+                        if (200 == baseEntity.getCode()) {
+                            callBack.response(PLAN_FREETIME_YES);
+
+                        } else {
+
+                            callBack.response(PLAN_FREETIME_YES);
+                        }
+                    }
+                });
     }
 
 
@@ -130,7 +191,7 @@ public class AppointNetwork {
     public static final int SEND_APPOINT_NO = 0;//登陆失败返回码,有待详细补充
 
     public interface SendAppointCallback {
-        public void response(int code, List<FreeTime> freeTimes);
+        public void response(int code);
     }
 
     /**
@@ -149,12 +210,17 @@ public class AppointNetwork {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        callback.response(SEND_APPOINT_NO);
                     }
 
                     @Override
                     public void onNext(BaseEntity baseEntity) {
 
+                        if (200 == baseEntity.getCode()) {
+                            callback.response(SEND_APPOINT_YES);
+                        } else {
+                            callback.response(SEND_APPOINT_NO);
+                        }
 
                     }
                 });

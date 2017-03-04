@@ -33,7 +33,7 @@ public class SendJtViewHolder extends BaseViewHolder {
 
         if (TextUtils.isEmpty(url)) {
             //最后一张，显示图标
-            ivImage.setImageResource(R.drawable.logo);
+            ivImage.setImageResource(R.drawable.white_add);
         } else {
             //不是最后一张显示图片内容
 //            PicassoUtils.loadResizeImage(url, R.drawable.logo, R.drawable.logo, 200, 200, ivImage);

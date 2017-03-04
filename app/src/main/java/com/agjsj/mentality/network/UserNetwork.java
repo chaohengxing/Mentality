@@ -26,6 +26,7 @@ import cn.bmob.newim.bean.BmobIMMessage;
 import cn.bmob.newim.bean.BmobIMUserInfo;
 import cn.bmob.newim.event.MessageEvent;
 import cn.bmob.v3.exception.BmobException;
+import retrofit2.http.Query;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -89,6 +90,91 @@ public class UserNetwork {
                 });
     }
 
+
+    //-------------------------------------更新学生用户信息----------------------------
+    public static final int UPDATE_STUDENTINFO_YES = 1;//登陆成功返回码
+    public static final int UPDATE_STUDENTINFO_NO = 0;//登陆失败返回码,有待详细补充
+
+    public interface updateStudentInfoCallBack {
+        public void response(int responseCode);
+    }
+
+    public void updateStudentInfo(String id,
+                                  String stuIcon,
+                                  String stuNickName,
+                                  String sex,
+                                  String userClass, String userMajor, final updateStudentInfoCallBack callBack) {
+        userNetworkService.updateStudentInfoService(id, stuIcon, stuNickName, sex, userClass, userMajor)
+                .subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<BaseEntity>() {
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        callBack.response(UPDATE_STUDENTINFO_NO);
+                    }
+
+                    @Override
+                    public void onNext(BaseEntity baseEntity) {
+                        if (200 == baseEntity.getCode()) {
+                            MyUser myUser = new Gson().fromJson(baseEntity.getData(), MyUser.class);
+                            updateCurrentUser(myUser);
+                            callBack.response(UPDATE_STUDENTINFO_YES);
+                        } else {
+                            callBack.response(UPDATE_STUDENTINFO_NO);
+                        }
+
+                    }
+                });
+    }
+
+    //-------------------------------------更新学生用户信息----------------------------
+    public static final int UPDATE_TEACHERINFO_YES = 1;//登陆成功返回码
+    public static final int UPDATE_TEACHERINFO_NO = 0;//登陆失败返回码,有待详细补充
+
+    public interface updateTeacherInfoCallBack {
+        public void response(int responseCode);
+    }
+
+    public void updateTeacherInfo(String id,
+                                  String teacherIcon,
+                                  String teacherNickName,
+                                  String sex,
+                                  String teacherIntro, final updateTeacherInfoCallBack callBack) {
+        userNetworkService.updateTeacherInfoService(id, teacherIcon, teacherNickName, sex, teacherIntro)
+                .subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<BaseEntity>() {
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        callBack.response(UPDATE_TEACHERINFO_NO);
+                    }
+
+                    @Override
+                    public void onNext(BaseEntity baseEntity) {
+                        if (200 == baseEntity.getCode()) {
+                            MyUser myUser = new Gson().fromJson(baseEntity.getData(), MyUser.class);
+                            updateCurrentUser(myUser);
+                            callBack.response(UPDATE_TEACHERINFO_YES);
+                        } else {
+                            callBack.response(UPDATE_TEACHERINFO_NO);
+                        }
+
+                    }
+                });
+    }
+
     //-------------------------------------获取当前用户------------------------------
     public MyUser getCurrentUser() {
         SharedPreferences sharedPreferences = MyApplication.INSTANCE().getSharedPreferences("currentUser", Context.MODE_PRIVATE);
@@ -103,6 +189,7 @@ public class UserNetwork {
             MyUser myUser = new MyUser();
             myUser.setId(sharedPreferences.getString("id", ""));
             myUser.setUserType(sharedPreferences.getInt("userType", -1));
+            myUser.setSex(sharedPreferences.getString("sex", ""));
             myUser.setUserClass(sharedPreferences.getString("userClass", ""));
             myUser.setUserMajor(sharedPreferences.getString("userMajor", ""));
             myUser.setRegisterTime(sharedPreferences.getString("registerTime", ""));
@@ -122,6 +209,7 @@ public class UserNetwork {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("id", myUser.getId());
         editor.putInt("userType", myUser.getUserType());
+        editor.putString("sex", myUser.getSex());
         editor.putString("userClass", myUser.getUserClass());
         editor.putString("userMajor", myUser.getUserMajor());
         editor.putString("registerTime", myUser.getRegisterTime());
@@ -198,6 +286,7 @@ public class UserNetwork {
                         Logger.i("query success：" + name + "," + avatar);
                         conversation.setConversationIcon(avatar);
                         conversation.setConversationTitle(name);
+
                         info.setName(name);
                         info.setAvatar(avatar);
                         //更新用户资料

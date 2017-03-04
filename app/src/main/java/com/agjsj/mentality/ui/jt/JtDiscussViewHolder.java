@@ -42,11 +42,11 @@ public class JtDiscussViewHolder extends BaseViewHolder {
     public void bindData(Object o) {
         DiscussJt jtDiscuss = (DiscussJt) o;
         if (UserType.StudentType == jtDiscuss.getUserType()) {
-            PicassoUtils.loadResizeImage(jtDiscuss.getStudentInfo().getStuIcon(), R.drawable.logo, R.drawable.logo, 50, 50, ivUserIcon);
+            PicassoUtils.loadResizeImage(jtDiscuss.getStudentInfo().getStuIcon(), R.drawable.default_pic, R.drawable.default_pic, 50, 50, ivUserIcon);
             tvNickname.setText(jtDiscuss.getStudentInfo().getStuNickName());
 
         } else if (UserType.TeacherType == jtDiscuss.getUserType()) {
-            PicassoUtils.loadResizeImage(jtDiscuss.getTeacherInfo().getTeacherIcon(), R.drawable.logo, R.drawable.logo, 50, 50, ivUserIcon);
+            PicassoUtils.loadResizeImage(jtDiscuss.getTeacherInfo().getTeacherIcon(), R.drawable.default_pic, R.drawable.default_pic, 50, 50, ivUserIcon);
             tvNickname.setText(jtDiscuss.getTeacherInfo().getTeacherNickName());
 
         }

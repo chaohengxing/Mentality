@@ -33,7 +33,7 @@ public class JtImageViewHolder extends BaseViewHolder {
         String imageUrl = (String) o;
 
 
-        PicassoUtils.loadImage(imageUrl, R.drawable.logo, R.drawable.logo, ivImage);
+        PicassoUtils.loadImage(imageUrl, R.drawable.default_pic, R.drawable.default_pic, ivImage);
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override

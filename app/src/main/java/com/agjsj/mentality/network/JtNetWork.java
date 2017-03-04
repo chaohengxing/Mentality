@@ -87,6 +87,51 @@ public class JtNetWork {
                 });
     }
 
+    //---------------------------------------获取我的鸡汤
+    public static final int GET_MYJTS_YES = 1;//登陆成功返回码
+    public static final int GET_MYJTS_NO = 0;//登陆失败返回码,有待详细补充
+
+    public interface GetMyJtBeansCallBack {
+        public void response(int responseCode, List<JtBean> jtBeens);
+    }
+
+    /**
+     * 分页加载
+     * 请求参数  pageIndex  pageSize
+     * <p/>
+     * 数据端返回接口
+     * Json字符串需要包含的内容:
+     * jt的基本信息
+     * 发布者的UserInfo
+     */
+    public void getMyJtBeans(String userid, final GetMyJtBeansCallBack callBack) {
+        jtNetworkService.getMyJtBeansService(userid)
+                .subscribeOn(Schedulers.io())//IO线程加载数据
+                .observeOn(AndroidSchedulers.mainThread())//主线程显示数据
+                .subscribe(new Subscriber<BaseEntity>() {
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        callBack.response(GET_MYJTS_NO, null);
+                    }
+
+                    @Override
+                    public void onNext(BaseEntity baseEntity) {
+                        if (200 == baseEntity.getCode()) {
+                            List<JtBean> jtBeens = new Gson().fromJson(baseEntity.getData(), new TypeToken<ArrayList<JtBean>>() {
+                            }.getType());
+                            callBack.response(GET_MYJTS_YES, jtBeens);
+                        } else {
+                            callBack.response(GET_MYJTS_NO, null);
+                        }
+                    }
+                });
+    }
 
     public static final int GET_JTINFO_WITH_DISCUSS_YES = 1;//登陆成功返回码
     public static final int GET_JTINFO_WITH_DISCUSS_NO = 0;//登陆失败返回码,有待详细补充

@@ -15,6 +15,7 @@ public class MyUser implements Serializable {
     private String account;
     private String password;
     private int userType;
+    private String sex;
     //一下是学生用户 用的字段
     private String userClass;
     private String userMajor;
@@ -27,6 +28,14 @@ public class MyUser implements Serializable {
     private String teacherNickName;
     private String teacherIntro;
     private String teacherIcon;
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
 
     public String getUserIcon() {
         return UserType.StudentType == userType ? stuIcon : UserType.TeacherType == userType ? teacherIcon : "";

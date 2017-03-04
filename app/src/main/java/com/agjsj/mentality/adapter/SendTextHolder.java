@@ -62,9 +62,9 @@ public class SendTextHolder extends BaseViewHolder implements View.OnClickListen
 //    ImageLoaderFactory.getLoader().loadAvator(iv_avatar,info != null ? info.getAvatar() : null, R.mipmap.head);
 
         if (info != null && !TextUtils.isEmpty(info.getAvatar())) {
-            PicassoUtils.loadResizeImage(info.getAvatar(), R.drawable.logo, R.drawable.logo, 100, 100, iv_avatar);
+            PicassoUtils.loadResizeImage(info.getAvatar(), R.drawable.default_pic, R.drawable.default_pic, 100, 100, iv_avatar);
         } else {
-            iv_avatar.setImageResource(R.drawable.logo);
+            iv_avatar.setImageResource(R.drawable.default_pic);
         }
 
         String time = dateFormat.format(message.getCreateTime());

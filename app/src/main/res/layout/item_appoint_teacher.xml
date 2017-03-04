@@ -7,14 +7,14 @@
 
 
     <TextView
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:gravity="center"
         android:text="TextView"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:textSize="24sp"
+        android:layout_height="40dp"
+        android:textSize="16sp"
         android:id="@+id/tv_date_appoint_tea"
-        android:background="@color/c_f98800"
+        android:background="@color/basecolor"
         android:layout_marginBottom="10dp" />
 
     <GridView

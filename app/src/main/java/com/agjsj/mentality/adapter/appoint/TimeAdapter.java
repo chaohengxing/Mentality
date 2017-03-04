@@ -11,7 +11,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.agjsj.mentality.R;
+import com.agjsj.mentality.bean.appoint.FreeTime;
 import com.agjsj.mentality.bean.appoint.TimeStatus;
+import com.agjsj.mentality.bean.appoint.TimeTemplate;
 import com.agjsj.mentality.dialog.ShowMegDialog;
 import com.agjsj.mentality.param.ConstatParam;
 import com.orhanobut.logger.Logger;
@@ -28,22 +30,32 @@ public class TimeAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater mInflate;
     //时间段状态
-    private List<TimeStatus> timeStatus;
+    private List<TimeTemplate> timeTemplates;
 
-    public TimeAdapter(Context context, List<TimeStatus> timeStatus) {
+    private List<FreeTime> freeTimes;
+
+    public List<FreeTime> getFreeTimes() {
+        return freeTimes;
+    }
+
+    private String currentDate;
+
+    public TimeAdapter(Context context, String currentDate, List<TimeTemplate> timeTemplates, List<FreeTime> freeTimes) {
         this.context = context;
-        this.timeStatus = timeStatus;
+        this.timeTemplates = timeTemplates;
+        this.currentDate = currentDate;
         mInflate = LayoutInflater.from(context);
+        this.freeTimes = freeTimes;
     }
 
     @Override
     public int getCount() {
-        return timeStatus.size();
+        return timeTemplates.size();
     }
 
     @Override
     public Object getItem(int i) {
-        return timeStatus.get(i);
+        return timeTemplates.get(i);
     }
 
     @Override
@@ -63,38 +75,17 @@ public class TimeAdapter extends BaseAdapter {
             holder = (ViewHolder) view.getTag();
         }
         //Logger.i("TimeAdapter" + "timeStatus.get(i).getId()：" + timeStatus.get(i).getId() + "\n" + ConstatParam.timeTemplateMap.get(timeStatus.get(i).getId()).getTimeName() + "");
-        holder.tv_time.setText(ConstatParam.timeTemplateMap.get(timeStatus.get(i).getId()).getTimeName() + "");
-        if (timeStatus.get(i).isStatus()) {
-            holder.tv_time.setBackgroundColor(Color.WHITE);
-            holder.tv_time.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ShowMegDialog dialog = new ShowMegDialog(context, "提示", "确认发布此时间段\n"
-                            + ConstatParam.timeTemplateMap.get(timeStatus.get(i).getId()).getTimeName()
-                            + "\n空闲时间吗？");
-                    dialog.show();
-                    dialog.setOnResultListener(new ShowMegDialog.OnResultListener() {
-                        @Override
-                        public void onOk() {
+        holder.tv_time.setText(timeTemplates.get(i).getTimeStart() + "--" + timeTemplates.get(i).getTimeEnd());
+        holder.tv_time.setBackgroundColor(Color.WHITE);
 
-                        }
+        for (int j = 0; j < freeTimes.size(); j++) {
+            if (currentDate.equals(freeTimes.get(j).getTimeDate())
+                    && timeTemplates.get(i).getId().equals(freeTimes.get(j).getTimeId())) {
+                holder.tv_time.setBackgroundColor(context.getResources().getColor(R.color.text_gray));
+            }
 
-                        @Override
-                        public void onCancel() {
-
-                        }
-                    });
-                }
-            });
-        } else {
-            holder.tv_time.setBackgroundColor(Color.GRAY);
-            holder.tv_time.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    return true;
-                }
-            });
         }
+
 
         return view;
     }

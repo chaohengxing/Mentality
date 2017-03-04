@@ -19,6 +19,7 @@ import com.agjsj.mentality.ui.SearchActivity;
 import com.agjsj.mentality.ui.base.ParentWithNaviActivity;
 import com.agjsj.mentality.ui.base.ParentWithNaviFragment;
 import com.agjsj.mentality.ui.photo.ViewPagerActivity;
+import com.agjsj.mentality.utils.PicassoUtils;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
@@ -35,13 +36,13 @@ public class JtFragment extends ParentWithNaviFragment implements SwipeRefreshLa
     @Bind(R.id.recyclerview)
     RecyclerView recyclerview;
     @Bind(R.id.swiprefreshlayout)
-    SwipeRefreshLayout refreshlayout;
+   protected SwipeRefreshLayout refreshlayout;
 
 
-    private List<JtBean> jtBeens;
+    protected List<JtBean> jtBeens;
 
     private LinearLayoutManager layoutManager;
-    private JtFragmentAdapter adapter;
+    protected JtFragmentAdapter adapter;
 
     private JtMenuPopup jtMenuPopup;
 
@@ -163,7 +164,7 @@ public class JtFragment extends ParentWithNaviFragment implements SwipeRefreshLa
     /**
      * 从网络加载数据
      */
-    private void getData() {
+    protected void getData() {
 
         //1.加载数据
         refreshlayout.setRefreshing(true);

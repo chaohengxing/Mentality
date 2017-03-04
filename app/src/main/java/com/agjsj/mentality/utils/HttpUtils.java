@@ -25,7 +25,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * 功能描述:
  */
 public class HttpUtils {
-    public static final String BASE_URL = "http://192.168.1.109:8080/xlyy/";
+    public static final String BASE_URL = "http://211.147.112.72:8/xlyy/";
     private Retrofit retrofit;
     private static final int NO_NET_MAX = 60 * 60 * 24 * 7; //7天 无网超时时间
     private static final int NET_MAX = 30; //30秒  有网超时时间
@@ -45,7 +45,7 @@ public class HttpUtils {
                             //Pragma:no-cache。在HTTP/1.1协议中，它的含义和Cache-Control:no-cache相同。为了确保缓存生效
                             .removeHeader("Pragma")
                             .header("Cache-Control", "private, max-age=" + NET_MAX)//添加缓存请求头
-                            .header("Content-Type","application/json;UTF-8")
+//                            .header("Content-Type","application/json;UTF-8")
                             .build();
                 }
 

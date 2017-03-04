@@ -117,9 +117,10 @@ public class TeacherInfoActivity extends ParentWithNaviActivity implements OnRec
     private void getData() {
         TeacherNetwork.getInstance().getTeacherInfoWithJtDiscussAndReplay(id, new TeacherNetwork.GetTeacherInfoWithJtDiscussAndReplayCallBack() {
             @Override
-            public void response(int responseCode, TeacherInfo teacherInfo) {
+            public void response(int responseCode, TeacherInfo teacher) {
                 if (TeacherNetwork.GET_TEACHERINFO_WITH_DISCUSS_YES == responseCode) {
-                    adapter.setTeacherInfo(teacherInfo);
+                    teacherInfo = teacher;
+                    adapter.setTeacherInfo(teacher);
                     adapter.notifyDataSetChanged();
                 } else if (TeacherNetwork.GET_TEACHERINFO_WITH_DISCUSS_NO == responseCode) {
                     toast("获取师资详情失败!");
@@ -178,7 +179,7 @@ public class TeacherInfoActivity extends ParentWithNaviActivity implements OnRec
     public void onItemClick(int position, int id) {
 
         if (R.id.tv_chat == id) {
-            startChat(teacherInfo.getId());
+            startChat(teacherInfo.getId(),teacherInfo.getTeacherNickName(),teacherInfo.getTeacherIcon());
         } else if (R.id.iv_icon == id) {
             Bundle bundle = new Bundle();
             ArrayList<String> images = new ArrayList<>();
@@ -208,18 +209,17 @@ public class TeacherInfoActivity extends ParentWithNaviActivity implements OnRec
     /**
      * 发起一个会话
      */
-    private void startChat(String userid) {
+    private void startChat(String userid,String userName,String userIcon) {
 
         //发起聊天
         //构造聊天方的用户信息:传入用户id、用户名和用户头像三个参数
 //        BmobIMUserInfo info = new BmobIMUserInfo("0", "测试用户名", "http://images.china.cn/attachement/png/site1000/20150930/ac9e178530e11775d4363d.png");
-        BmobIMUserInfo info = new BmobIMUserInfo(userid, "测试用户名", "http://life.people.com.cn/NMediaFile/2015/0618/MAIN201506181420187740456986383.jpg");
+        BmobIMUserInfo info = new BmobIMUserInfo(userid, userName,userIcon );
 
         //启动一个会话，设置isTransient设置为false,则会在本地数据库的会话列表中先创建（如果没有）与该用户的会话信息，且将用户信息存储到本地的用户表中
         BmobIMConversation c = BmobIM.getInstance().startPrivateConversation(info, false, null);
         Bundle bundle = new Bundle();
         bundle.putSerializable("c", c);
-        Logger.e("chx", "发起会话");
         startActivity(ChatActivity.class, bundle);
     }
 

@@ -15,8 +15,16 @@ public class TeacherInfo extends User {
     private int userType;
     private String teacherIntro;
     private String teacherIcon;
+    private String sex;
     private List<DiscussTeacher> discussTeachers;
 
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
 
     @Override
     public String toString() {

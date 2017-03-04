@@ -33,7 +33,7 @@ public class ChatFragmentAdapter extends BaseRecyclerAdapter<Conversation> {
         Object obj = conversation.getAvatar();
         if (obj instanceof String) {
             String avatar = (String) obj;
-            holder.setImageView(avatar, R.drawable.logo, R.id.iv_user_icon);
+            holder.setImageView(avatar, R.drawable.default_pic, R.id.iv_user_icon);
         } else {
             int defaultRes = (int) obj;
             holder.setImageView(null, defaultRes, R.id.iv_user_icon);

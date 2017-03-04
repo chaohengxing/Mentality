@@ -124,9 +124,9 @@ public class ViewPagerActivity extends AppCompatActivity implements ViewPager.On
             PhotoView photoView = new PhotoView(container.getContext());
             photoView.setBackgroundResource(R.color.black);
             if (TextUtils.isEmpty(sDrawables.get(position))) {
-                PicassoUtils.loadResourceImage(R.drawable.logo, photoView);
+                PicassoUtils.loadResourceImage(R.drawable.default_pic, photoView);
             } else {
-                PicassoUtils.loadImage(sDrawables.get(position), R.drawable.logo, R.drawable.logo, photoView);
+                PicassoUtils.loadImage(sDrawables.get(position), R.drawable.default_pic, R.drawable.default_pic, photoView);
             }
 
             // Now just add PhotoView to ViewPager and return it

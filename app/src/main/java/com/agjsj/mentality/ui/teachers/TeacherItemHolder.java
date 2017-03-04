@@ -39,7 +39,7 @@ public class TeacherItemHolder extends BaseViewHolder {
     public void bindData(Object o) {
         TeacherInfo teacherInfo = (TeacherInfo) o;
 
-        PicassoUtils.loadResizeImage(teacherInfo.getTeacherIcon(), R.drawable.logo, R.drawable.logo, 200, 200, ivIcon);
+        PicassoUtils.loadResizeImage(teacherInfo.getTeacherIcon(), R.drawable.default_pic, R.drawable.default_pic, 200, 200, ivIcon);
 
         tvIntro.setText(teacherInfo.getTeacherIntro());
         tvNickname.setText(teacherInfo.getTeacherNickName());

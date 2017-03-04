@@ -40,7 +40,7 @@ public class TeacherDiscussViewHolder extends BaseViewHolder {
     @Override
     public void bindData(Object o) {
         DiscussTeacher discussTeacher = (DiscussTeacher) o;
-        PicassoUtils.loadResizeImage(discussTeacher.getStudentInfo().getStuIcon(), R.drawable.logo, R.drawable.logo, 50, 50, ivUserIcon);
+        PicassoUtils.loadResizeImage(discussTeacher.getStudentInfo().getStuIcon(), R.drawable.default_pic, R.drawable.default_pic, 50, 50, ivUserIcon);
         tvNickname.setText(discussTeacher.getStudentInfo().getStuNickName());
         tvTime.setText(TimeUtil.getChatTime(false, Long.valueOf(discussTeacher.getDiscussTime())));
         tvContent.setText(discussTeacher.getDiscussInfo());

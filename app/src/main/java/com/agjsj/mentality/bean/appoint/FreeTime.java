@@ -17,6 +17,15 @@ public class FreeTime {
 
 	private List<Appoint> appoints;
 
+	public FreeTime() {
+	}
+
+	public FreeTime(String teacherId, String timeDate, String timeId) {
+		this.teacherId = teacherId;
+		this.timeDate = timeDate;
+		this.timeId = timeId;
+	}
+
 	/**
 	 * @return the appoint
 	 */

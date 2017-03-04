@@ -10,13 +10,21 @@ import android.view.ViewGroup;
 
 import com.agjsj.mentality.adapter.appoint.FreeTimeAdapter;
 import com.agjsj.mentality.R;
+import com.agjsj.mentality.adapter.appoint.FreeTimeHolder;
 import com.agjsj.mentality.bean.appoint.FreeTime;
+import com.agjsj.mentality.bean.appoint.TeacherTimePlan;
 import com.agjsj.mentality.bean.appoint.TimeStatus;
+import com.agjsj.mentality.bean.appoint.TimeTemplate;
+import com.agjsj.mentality.global.MyConfig;
 import com.agjsj.mentality.network.AppointNetwork;
+import com.agjsj.mentality.network.UserNetwork;
 import com.agjsj.mentality.ui.MainActivity;
 import com.agjsj.mentality.ui.SearchActivity;
 import com.agjsj.mentality.ui.base.ParentWithNaviActivity;
+import com.agjsj.mentality.ui.chat.Config;
+import com.agjsj.mentality.utils.DialogFactory;
 import com.agjsj.mentality.utils.TimeUtil;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +36,11 @@ import butterknife.ButterKnife;
 /**
  * Created by HengXing on 2016/10/29.
  */
-public class TeacherAppointFragment extends AppointFragment {
+public class TeacherAppointFragment extends AppointFragment implements FreeTimeHolder.OnTeacherPlanFreeTimeListener {
     @Bind(R.id.recyc_appoint_teacher)
     RecyclerView mRecyclerView;
 
     private FreeTimeAdapter mAdapter;
-    private List<FreeTime> freeTimeList;
     private LinearLayoutManager linearLayoutManager;
 
     @Override
@@ -48,7 +55,7 @@ public class TeacherAppointFragment extends AppointFragment {
 
     @Override
     public Object right() {
-        return R.drawable.search_icon;
+        return null;
     }
 
     @Override
@@ -61,7 +68,7 @@ public class TeacherAppointFragment extends AppointFragment {
 
             @Override
             public void clickRight() {
-                startActivity(SearchActivity.class, null);
+
             }
         };
     }
@@ -72,43 +79,39 @@ public class TeacherAppointFragment extends AppointFragment {
         rootView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_appoint_teacher, container, false);
         initNaviView();
         ButterKnife.bind(this, rootView);
+        initView();
 
         initData();
 
-        initView();
 
         return rootView;
     }
 
     private void initView() {
-        mAdapter = new FreeTimeAdapter(getActivity(), freeTimeList);
+        mAdapter = new FreeTimeAdapter(getActivity());
+        mAdapter.setOnTeacherPlanFreeTimeListener(this);
         mRecyclerView.setAdapter(mAdapter);
         linearLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(linearLayoutManager);
     }
 
     private void initData() {
-        freeTimeList = new ArrayList<>();
-        AppointNetwork.getInstance().queryTeacherFreeTime("0001", new AppointNetwork.QueryTeaFreeTimeCallable() {
+        AppointNetwork.getInstance().teacherGetFreeTimes(UserNetwork.getInstance().getCurrentUser().getId(), MyConfig.getTimeDates(), new AppointNetwork.TeacherGetFreeTimesCallBack() {
+
             @Override
-            public void postResult(List<FreeTime> lists) {
-                freeTimeList = lists;
+            public void response(int code, TeacherTimePlan timePlan) {
+
+                Logger.e(timePlan.getTemplates().size() + "////" + timePlan.getFreeTimes().size());
+
+                if (AppointNetwork.TEACHER_GETFREETIMES_YES == code) {
+                    mAdapter.setTeacherTimePlan(timePlan);
+                    mAdapter.notifyDataSetChanged();
+                } else if (AppointNetwork.TEACHER_GETFREETIMES_NO == code) {
+                    toast("获取数据失败!");
+                }
+
             }
         });
-
-//        for (int i = 0; i < 5; i++) {
-//            FreeTime time = new FreeTime();
-//            time.setDate(TimeUtil.getFormatToday(TimeUtil.FORMAT_DATE + "_" + i));
-//            List<TimeStatus> timeStatus = new ArrayList<>();
-//            for (int j = 0; j < 6; j++) {
-//                TimeStatus status = new TimeStatus();
-//                status.setId(j);
-//                status.setStatus(getRadomBool());
-//                timeStatus.add(status);
-//            }
-//            time.setTimeStatus(timeStatus);
-//            freeTimeList.add(time);
-//        }
     }
 
     private boolean getRadomBool() {
@@ -120,4 +123,51 @@ public class TeacherAppointFragment extends AppointFragment {
     }
 
 
+    /**
+     * 教师点击该时间段  排挡
+     *
+     * @param datePosition
+     * @param timeTemplatePosition
+     */
+    @Override
+    public void onItemClick(final int datePosition, final int timeTemplatePosition) {
+
+        //先判断是否已经排挡
+        for (int i = 0; i < mAdapter.getTeacherTimePlan().getFreeTimes().size(); i++) {
+            if (mAdapter.getTimedates().get(datePosition).equals(mAdapter.getTeacherTimePlan().getFreeTimes().get(i).getTimeDate())
+                    && mAdapter.getTeacherTimePlan().getTemplates().get(timeTemplatePosition).getId().equals(mAdapter.getTeacherTimePlan().getFreeTimes().get(i).getTimeId())) {
+
+                new DialogFactory().getDialog(getContext(), "您已在该时段排挡，请不要重复排挡!", "确定", null).show();
+                return;
+            }
+        }
+
+        new DialogFactory().getDialog(getContext(), "您确定要在此时间段排挡吗?", "取消", "确定", new DialogFactory.MDialogListener() {
+            @Override
+            public void leftbt(int key) {
+
+            }
+
+            @Override
+            public void rightbt(int key) {
+                //在此发布排挡
+                FreeTime freeTime = new FreeTime(UserNetwork.getInstance().getCurrentUser().getId(),
+                        mAdapter.getTimedates().get(datePosition),
+                        mAdapter.getTeacherTimePlan().getTemplates().get(timeTemplatePosition).getId());
+                AppointNetwork.getInstance().planFreeTime(freeTime, new AppointNetwork.PlanFreeTimeCallBack() {
+                    @Override
+                    public void response(int code) {
+                        if (AppointNetwork.PLAN_FREETIME_YES == code) {
+                            toast("排挡成功!");
+                            initData();
+                        } else if (AppointNetwork.PLAN_FREETIME_NO == code) {
+                            toast("排挡失败!");
+                        }
+                    }
+                });
+            }
+        });
+
+
+    }
 }

@@ -11,6 +11,15 @@ public class StudentInfo  extends User{
 	private String stuIcon;
 	private int stuStatus;
 	private String stuNickName;
+	private String sex;
+
+	public String getSex() {
+		return sex;
+	}
+
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
 
 	public int getUserType() {
 		return userType;

@@ -21,6 +21,8 @@ import com.agjsj.mentality.ui.MainActivity;
 import com.agjsj.mentality.ui.SearchActivity;
 import com.agjsj.mentality.ui.base.ParentWithNaviActivity;
 import com.agjsj.mentality.ui.chat.Config;
+import com.agjsj.mentality.ui.teachers.TeacherInfoActivity;
+import com.agjsj.mentality.utils.PicassoUtils;
 import com.agjsj.mentality.utils.TimeUtil;
 import com.orhanobut.logger.Logger;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
@@ -39,7 +41,7 @@ import butterknife.ButterKnife;
 /**
  * Created by HengXing on 2016/10/29.
  */
-public class StudentAppointFragment extends AppointFragment implements AppointStiRecyHeaderAdapter.SendAppointListener {
+public class StudentAppointFragment extends AppointFragment implements AppointStiRecyHeaderAdapter.SendAppointListener, AppointStiRecyHeaderAdapter.OnItemClickListener {
 
     @Bind(R.id.recyc_appoint_stu)
     RecyclerView mRecyclerView;
@@ -47,7 +49,7 @@ public class StudentAppointFragment extends AppointFragment implements AppointSt
 
     private LayoutInflater mInflater;
 
-    private AppointStiRecyHeaderAdapter adapter;
+    protected AppointStiRecyHeaderAdapter adapter;
     private StickyRecyclerHeadersDecoration mHeaderDecor;
     private LinearLayoutManager linearLayoutManager;
     long lastTime = 0;
@@ -64,7 +66,7 @@ public class StudentAppointFragment extends AppointFragment implements AppointSt
 
     @Override
     public Object right() {
-        return R.drawable.search_icon;
+        return null;
     }
 
     @Override
@@ -77,7 +79,6 @@ public class StudentAppointFragment extends AppointFragment implements AppointSt
 
             @Override
             public void clickRight() {
-                startActivity(SearchActivity.class, null);
             }
         };
     }
@@ -101,6 +102,7 @@ public class StudentAppointFragment extends AppointFragment implements AppointSt
     private void initView() {
         adapter = new AppointStiRecyHeaderAdapter(getContext());
         adapter.setSendAppointListener(this);
+        adapter.setOnItemClickListener(this);
         initDate();
         mRecyclerView.setAdapter(adapter);
 
@@ -114,7 +116,7 @@ public class StudentAppointFragment extends AppointFragment implements AppointSt
     /**
      * 下拉刷新时调用
      */
-    private void initDate() {
+    protected void initDate() {
         AppointNetwork.getInstance().getFreeTimesWithMyAppoint(UserNetwork.getInstance().getCurrentUser().getId(),
                 MyConfig.getTimeDates(), new AppointNetwork.GetFreeTimesWithMyAppointCallback() {
                     @Override
@@ -123,15 +125,16 @@ public class StudentAppointFragment extends AppointFragment implements AppointSt
                             //在此做一个排序
                             List<FreeTime> list = new ArrayList<FreeTime>();
                             List<String> dates = MyConfig.getTimeDates();
-                            for (int i = 0; i<dates.size(); i++) {
+                            for (int i = 0; i < dates.size(); i++) {
                                 for (int j = 0; j < freeTimes.size(); j++) {
-                                    if (dates.get(i).equals(freeTimes.get(j).getTimeDate())){
+                                    if (dates.get(i).equals(freeTimes.get(j).getTimeDate())) {
                                         list.add(freeTimes.get(j));
                                     }
                                 }
                             }
 
 
+                            adapter.clear();
                             adapter.addAll(list);
                             adapter.notifyDataSetChanged();
                         } else if (AppointNetwork.GetFreeTimesWithMyAppoint_NO == code) {
@@ -198,10 +201,35 @@ public class StudentAppointFragment extends AppointFragment implements AppointSt
 
     /**
      * 发布预约
+     *
      * @param position
      */
     @Override
     public void sendAppoint(int position) {
-        Appoint appoint = new Appoint();
+        Appoint appoint = new Appoint(UserNetwork.getInstance().getCurrentUser().getId(),
+                adapter.getItem(position).getTeacherInfo().getId(),
+                adapter.getItem(position).getId());
+        AppointNetwork.getInstance().sendAppoint(appoint, new AppointNetwork.SendAppointCallback() {
+            @Override
+            public void response(int code) {
+                if (AppointNetwork.SEND_APPOINT_YES == code) {
+                    toast("预约成功!");
+                    initDate();
+                } else {
+                    toast("预约失败!");
+                }
+            }
+        });
+    }
+
+    /**
+     * 单击进入教室详情页
+     * @param position
+     */
+    @Override
+    public void onItemClick(int position) {
+        Bundle bundle = new Bundle();
+        bundle.putString("id",adapter.getItem(position).getTeacherInfo().getId());
+        startActivity(TeacherInfoActivity.class, bundle);
     }
 }
